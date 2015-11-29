@@ -29,8 +29,8 @@ class QuestCalendarExporter {
             '(\\d{3})\\s+'                                                  + // Section
             '(\\w{3})\\s+'                                                  + // Type (LEC, SEM, STU)
             '([MThWF]{0,6})\\s+'                                            + // Days
-            '(1?\\d\\:[0-5]\\d[AP]M)\\ -\\ '                          + // Start time
-            '(1?\\d\\:[0-5]\\d[AP]M)\\s+'                             + // End time
+            '(1?\\d\\:[0-5]\\d[AP]M)\\ -\\ '                                + // Start time
+            '(1?\\d\\:[0-5]\\d[AP]M)\\s+'                                   + // End time
             '([\\w\\ ]+\\s+[0-9]{1,5}[A-Z]?|TBA)\\s+'                       + // Location
             '([\\w\\ \\-\\,\\r\\n]+)\\s+'                                   + // Professor
             '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})\\ -\\ '                       + // Start date
