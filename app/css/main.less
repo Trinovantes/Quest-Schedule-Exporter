@@ -1,0 +1,119 @@
+@import url(normalize.less);
+
+@red: #A94442;
+
+body{
+    color: #333;
+    font-family: sans-serif;
+    font-size: 15px;
+    line-height: 24px;
+}
+
+div.container{
+    margin: 0 auto;
+    padding: 20px 0;
+    width: 800px;
+}
+
+noscript{
+    aside{
+        color: @red;
+        background: #F2DEDE;
+        font-weight: bold;
+        padding: 0 20px;
+    }
+}
+
+header{
+    code{
+        background: #eee;
+        font-size: 11px;
+        padding: 3px;
+    }
+
+    h1.beta{
+        display: inline-block;
+        position: relative;
+
+        &:after{
+            display: block;
+            position: absolute;
+            top: -10px; right: -40px;
+
+            color: @red;
+            content: 'Beta';
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+    }
+}
+
+form#mainForm{
+    background: #eee;
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 20px;
+
+    div.formGroup{
+        margin-bottom: 20px;
+
+        textarea,
+        input{
+            box-sizing: border-box;
+            border: 1px solid #999;
+            display: block;
+            margin: 0;
+            padding: 10px;
+            width: 100%;
+
+            &:focus{
+                background: lighten(yellow, 40%);
+            }
+        }
+
+        label{
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+    }
+
+    table#placeholders{
+        @border-color: #999;
+
+        background: #efefef;
+        border-left: 1px solid @border-color;
+        border-right: 1px solid @border-color;
+        margin-bottom: 20px;
+        width: 100%;
+
+        tr{
+            th,
+            td{
+                padding: 5px 10px;
+            }
+        }
+
+        thead{
+            tr{
+                border-top: 1px solid @border-color;
+                border-bottom: 1px solid @border-color;
+
+                th{
+                    text-align: left;
+                }
+            }
+        }
+
+        tbody{
+            tr{
+                border-bottom: 1px solid @border-color;
+            }
+        }
+    }
+
+    button#generateBtn{
+        cursor: pointer;
+        padding: 10px 20px;
+    }
+}
