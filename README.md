@@ -39,7 +39,7 @@ vim post-receive
 
 Add the following to the `post-receive` file:
 ```
-#!/bin/sh
+#!/bin/bash
 
 GIT_REPO=$HOME/questscheduleexporter.xyz.git
 TMP_GIT_CLONE=/tmp/questscheduleexporter.xyz
@@ -50,7 +50,7 @@ cd $TMP_GIT_CLONE
 
 npm install
 gulp build
-mv $TMP_GIT_CLONE/dist $PUBLIC_WWW
+rsync -a --delete $TMP_GIT_CLONE/dist/ $PUBLIC_WWW/
 
 rm -Rf $TMP_GIT_CLONE
 exit
