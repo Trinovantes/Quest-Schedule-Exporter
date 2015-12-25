@@ -3,7 +3,7 @@
   "description": "Quest Exporter",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/Trinovantes/Quest-Schedule-Exporter"
   },
   "license": "SEE LICENSE IN LICENSE",
   "private": true,
