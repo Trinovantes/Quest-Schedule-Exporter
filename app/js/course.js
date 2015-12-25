@@ -50,12 +50,12 @@ class Course {
 
     static _flatten(string) {
         // Replace all whitespace (line breaks, multiple spaces) with a single space
-        var flatString = string.replace(/\s+/g, ' ');
+        let flatString = string.replace(/\s+/g, ' ');
         return $.trim(flatString);
     }
 
     static _parseDateTime(classDays, startDate, endDate, startTime, endTime) {
-        let daysWithClasses = classDays
+        const daysWithClasses = classDays
             .replace(/Th/g, 'H') // Replace 'Th' with H key
             .toLowerCase();      // Set to lowercase to match keys in the above mappings
 
@@ -70,9 +70,9 @@ class Course {
                 f: 'FR',
             };
 
-            var classDaysString = '';
+            let classDaysString = '';
 
-            for (var i = 0; i < daysWithClasses.length; i++) {
+            for (let i = 0; i < daysWithClasses.length; i++) {
                 if (i > 0) {
                     classDaysString += ',';
                 }
@@ -86,9 +86,9 @@ class Course {
 
         // If it's a repeating event (e.g. lecture), then return a DateTime object
         // otherwise (e.g. midterm), then return undefined
-        let untilDate = (function() {
+        const untilDate = (function() {
             if (startDate !== endDate) {
-                var lastDateOfClass = new Date(endDate);
+                let lastDateOfClass = new Date(endDate);
                 lastDateOfClass.setHours(23, 59);
                 return lastDateOfClass;
             }
@@ -96,7 +96,7 @@ class Course {
 
         // Advance start date of term to first day of class
         // e.g. term start on Jan 4 (Mon) but first day of a class is on Tues (Jan 5)
-        let firstDateOfClass = (function() {
+        const firstDateOfClass = (function() {
             let WEEKDAY_NUMBER = {
                 m: 1,
                 t: 2,
@@ -105,7 +105,7 @@ class Course {
                 f: 5,
             };
 
-            var firstDate = new Date(startDate);
+            let firstDate = new Date(startDate);
             let daysWithClassesNumbers = daysWithClasses.split('').map(d => WEEKDAY_NUMBER[d]);
 
             while (!daysWithClassesNumbers.includes(firstDate.getDay())) {
@@ -121,12 +121,12 @@ class Course {
             let hour = parseInt(matches[1]);
             let minute = parseInt(matches[2]);
 
-            var hoursOffset = 0;
+            let hoursOffset = 0;
             if (time.match(/PM/) && hour < 12) {
                 hoursOffset = 12;
             }
 
-            var dateTime = new Date(firstDateOfClass);
+            let dateTime = new Date(firstDateOfClass);
             dateTime.setHours(dateTime.getHours() + hour + hoursOffset);
             dateTime.setMinutes(dateTime.getMinutes() + minute);
             return dateTime;
