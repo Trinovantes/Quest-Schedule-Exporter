@@ -4,9 +4,10 @@ let Config = require('config');
 class Course {
     constructor(options) {
         this._code     = options.code;
-        this._section  = options.section;
         this._name     = options.name;
-        this._type     = options.type;
+
+        this._section  = Course._flatten(options.section);
+        this._type     = Course._flatten(options.type);
         this._location = Course._flatten(options.location);
         this._prof     = Course._flatten(options.prof);
 
@@ -165,8 +166,8 @@ class Course {
     _fillPlaceholders(text) {
         for (let placeholder of Config.placeholders) {
             let key = '_' + placeholder.placeholder.substring(1);
-            let regEx = new RegExp('(' + placeholder.placeholder + ')', 'g');
-            text = text.replace(regEx, this[key]);
+            let regex = new RegExp('(' + placeholder.placeholder + ')', 'g');
+            text = text.replace(regex, this[key]);
         }
 
         return text;

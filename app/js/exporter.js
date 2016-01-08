@@ -19,31 +19,45 @@ class QuestCalendarExporter {
     }
 
     _parseData() {
-        let regex = new RegExp(this._createRegex(), 'g');
-        let matches = null;
+        let courseRegex = new RegExp(this._createCourseRegex(), 'g');
+        let sectionRegex = new RegExp(this._createSectionRegex(), 'g');
         let loopCount = 0;
 
+        let courseMatches = null;
         while (true) {
-            matches = regex.exec(this.questData);
-            if (matches === null || loopCount++ > Config.MAX_COURSES) {
+            courseMatches = courseRegex.exec(this.questData);
+            if (courseMatches === null || loopCount++ > Config.MAX_COURSES) {
                 break;
             }
 
-            let course = new Course({
-                code      : matches[1],
-                section   : matches[4],
-                name      : matches[2],
-                type      : matches[5],
-                location  : matches[9],
-                prof      : matches[10],
+            let sectionMatches = null;
+            while (true) {
+                sectionMatches = sectionRegex.exec(courseMatches[0]);
+                if (sectionMatches === null || loopCount++ > Config.MAX_COURSES) {
+                    break;
+                }
 
-                classDays : matches[6],
-                startDate : matches[11],
-                endDate   : matches[12],
-                startTime : matches[7],
-                endTime   : matches[8],
-            });
-            this.courses.push(course);
+                if (sectionMatches[4] === 'TBA') {
+                    continue;
+                }
+
+                let course = new Course({
+                    code      : courseMatches[1],
+                    name      : courseMatches[2],
+                
+                    section   : sectionMatches[2],
+                    type      : sectionMatches[3],
+                    location  : sectionMatches[8],
+                    prof      : sectionMatches[9],
+
+                    classDays : sectionMatches[5],
+                    startTime : sectionMatches[6],
+                    endTime   : sectionMatches[7],
+                    startDate : sectionMatches[10],
+                    endDate   : sectionMatches[11],
+                });
+                this.courses.push(course);
+            }
         }
 
         if (loopCount === 0 || loopCount >= Config.MAX_COURSES) {
@@ -95,38 +109,62 @@ class QuestCalendarExporter {
     // Helpers 
     //-------------------------------------------------------------------------
 
-    _createRegex() {
-        const classNumberPattern = '\\d{4}';
+    _createCourseRegex() {
+        let courseHeaderPattern = '(\\w{2,5}\\ \\w{3,4})\\ -\\ ([^\\s]+)';
 
-        let timePattern = (function(questData) {
-            const timePattern12h = '(1?\\d\\:[0-5]\\d[AP]M)';
-            const timePattern24h = '([0-2]\\d\\:[0-5]\\d)';
-            let is24h = /([0-5]\d[A|P]M)/.exec(questData) === null;
-            return is24h ? timePattern24h : timePattern12h;
-        })(this.questData);
-
-        let anythingBeforePattern = function(pattern) {
-            return '(?:(?!' + pattern + ')[\\w|\\W])*';
+        let anythingBeforePattern = function (pattern) {
+            return '(?:(?!' + pattern + ')[\\w|\\W])*';  
         };
 
         /*jshint multistr: true */
         let regex =
-            '(\\w{2,5}\\ \\w{3,4})\\ -\\ ([^\\r\\n]+)'                      + // Course code and name
-            anythingBeforePattern(classNumberPattern)                       +
-            '(' + classNumberPattern + ')\\s+'                              + // Class number
-            '(\\d{3})\\s+'                                                  + // Section
-            '(\\w{3})\\s+'                                                  + // Type (LEC, SEM, STU)
-            '([MThWF]{0,6})\\s+'                                            + // Days
-            timePattern +  '\\ -\\ '                                        + // Start time
-            timePattern +  '\\s+'                                           + // End time
-            '([\\w\\ ]+\\s+[0-9]{1,5}[A-Z]?|TBA)\\s+'                       + // Location
-            '([\\w\\ \\-\\,\\r\\n]+)\\s+'                                   + // Professor
-            '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})\\ -\\ '                       + // Start date
-            '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})'                              + // End date
+            courseHeaderPattern                           + // Course code and name
+            anythingBeforePattern(courseHeaderPattern)    +
         '';
 
         return regex;
     }
+
+    _createSectionRegex() {
+        let classNumberPattern = '\\d{4}';
+
+        let timePattern = (function getTimePattern(questData) {
+            const timePattern12h = '1?\\d\\:[0-5]\\d[AP]M';
+            const timePattern24h = '[0-2]\\d\\:[0-5]\\d';
+            let is24h = /([0-5]\d[A|P]M)/.exec(questData) === null;
+            return is24h ? timePattern24h : timePattern12h;
+        })(this.questData);
+
+        let patternOrTBA = function(pattern) {
+            return '(' + pattern + '|TBA)\\s*';
+        };
+
+        /*jshint multistr: true */
+        let regex =
+            '(' + classNumberPattern + ')\\s*'          + // Class number
+            '(\\d{3}\\s*)'                              + // Section
+            '(\\w{3}\\s*)'                              + // Type (LEC, SEM, STU, LAB)
+            patternOrTBA(
+                '([MThWF]{0,6})\\s*'                        + // Days
+                '(' + timePattern +  ')\\ -\\ '             + // Start time
+                '(' + timePattern +  ')\\s*'                + // End time
+                ''
+            )                                           +
+            patternOrTBA(
+                '[\\w\\ ]+\\s*[0-9]{1,5}[A-Z]?'             + // Location
+                ''
+            )                                           +
+            patternOrTBA(
+                '[\\w\\ \\-\\,\\s]+'                        + // Professor
+                ''
+            )                                           +
+            '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})\\ -\\ '   + // Start date
+            '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})'          + // End date
+        '';
+
+        return regex;
+    }
+
 }
 
 module.exports = QuestCalendarExporter;
