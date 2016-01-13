@@ -55,14 +55,44 @@ class Course {
         return $.trim(flatString);
     }
 
-    static _parseDateTime(classDays, startDate, endDate, startTime, endTime) {
+    static _parseDate(dateString) {
+        // Assume dateString is XX/XX/XXXX
+
+        const LANGUAGE = window.navigator.userLanguage || window.navigator.language;
+        const args = dateString.split('/');
+        let date;
+
+        switch (LANGUAGE) {
+            case 'en-US': {
+                // MM/DD/YYYY
+                date = new Date(args[2], args[0] - 1, args[1]);
+                break;
+            }
+
+            case 'en-GB':
+            case 'en-CA': {
+                // DD/MM/YYYY
+                date = new Date(args[2], args[1] - 1, args[0]);
+                break;
+            }
+
+            default: {
+                // ¯\_(ツ)_/¯
+                date = new Date(dateString);
+            }
+        }
+
+        return date;
+    }
+
+    static _parseDateTime(classDays, startDateString, endDateString, startTimeString, endTimeString) {
         const daysWithClasses = classDays
             .replace(/Th/g, 'H') // Replace 'Th' with H key
             .toLowerCase();      // Set to lowercase to match keys in the above mappings
 
         // Parse the days with classes string from quest and return a comma delimited list
         // of weekdays in iCalendar format
-        let parseDaysWithClasses = function () {
+        const parseDaysWithClasses = function () {
             let WEEKDAY_NAME = {
                 m: 'MO',
                 t: 'TU',
@@ -88,9 +118,10 @@ class Course {
         // If it's a repeating event (e.g. lecture), then return a DateTime object
         // otherwise (e.g. midterm), then return undefined
         const untilDate = (function() {
-            if (startDate !== endDate) {
-                let lastDateOfClass = new Date(endDate);
-                lastDateOfClass.setHours(23, 59);
+            if (startDateString !== endDateString) {
+                let lastDateOfClass = Course._parseDate(endDateString);
+                lastDateOfClass.setHours(23);
+                lastDateOfClass.setMinutes(59);
                 return lastDateOfClass;
             }
         })();
@@ -106,7 +137,7 @@ class Course {
                 f: 5,
             };
 
-            let firstDate = new Date(startDate);
+            let firstDate = Course._parseDate(startDateString);
             let daysWithClassesNumbers = daysWithClasses.split('').map(d => WEEKDAY_NUMBER[d]);
 
             while (!daysWithClassesNumbers.includes(firstDate.getDay())) {
@@ -117,13 +148,13 @@ class Course {
         })();
 
         // Parse the time in 12H format to return a DateTime object on the firstDateOfClass
-        let parseTime = function(time) {
-            let matches = time.match(/(1?\d)\:([0-5]\d)/);
+        let parseTime = function(timeString) {
+            let matches = timeString.match(/(1?\d)\:([0-5]\d)/);
             let hour = parseInt(matches[1]);
             let minute = parseInt(matches[2]);
 
             let hoursOffset = 0;
-            if (time.match(/PM/) && hour < 12) {
+            if (timeString.match(/PM/) && hour < 12) {
                 hoursOffset = 12;
             }
 
@@ -136,8 +167,8 @@ class Course {
         return [
             parseDaysWithClasses(),
             Course._convertToICalTimeString(untilDate),
-            Course._convertToICalTimeString(parseTime(startTime)),
-            Course._convertToICalTimeString(parseTime(endTime)),
+            Course._convertToICalTimeString(parseTime(startTimeString)),
+            Course._convertToICalTimeString(parseTime(endTimeString)),
         ];
     }
 
@@ -152,6 +183,10 @@ class Course {
     }
 
     static _convertToICalTimeString(dateTime) {
+        if (typeof dateTime === 'undefined') {
+            return undefined;
+        }
+
         return ''                                      +
             dateTime.getFullYear()                     +
             Course._padNumber(dateTime.getMonth() + 1) +
