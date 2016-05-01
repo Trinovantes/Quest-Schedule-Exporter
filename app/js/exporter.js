@@ -3,7 +3,8 @@ let Course = require('course');
 
 
 class QuestCalendarExporter {
-    constructor(questData, summary, description) {
+    constructor(dateFormatType, questData, summary, description) {
+        this.dateFormatType = dateFormatType;
         this.questData = questData;
         this.summary = summary;
         this.description = description;
@@ -12,10 +13,13 @@ class QuestCalendarExporter {
 
     run() {
         // Store courses into 'this.courses' array
-        if (this._parseData()) {
-            let ical = this._generateICal(); // Returns a string of the calendar file
-            this._downloadFile(ical); // Downloads file to user's computer
-        }
+        this._parseData();
+
+        // Returns a string of the calendar file
+        let ical = this._generateICal();
+
+        // Downloads file to user's computer
+        this._downloadFile(ical);
     }
 
     _parseData() {
@@ -43,19 +47,20 @@ class QuestCalendarExporter {
                 }
 
                 let course = new Course({
-                    code      : courseMatches[1],
-                    name      : courseMatches[2],
-                
-                    section   : sectionMatches[2],
-                    type      : sectionMatches[3],
-                    location  : sectionMatches[8],
-                    prof      : sectionMatches[9],
+                    code           : courseMatches[1],
+                    name           : courseMatches[2],
 
-                    classDays : sectionMatches[5],
-                    startTime : sectionMatches[6],
-                    endTime   : sectionMatches[7],
-                    startDate : sectionMatches[10],
-                    endDate   : sectionMatches[11],
+                    section        : sectionMatches[2],
+                    type           : sectionMatches[3],
+                    location       : sectionMatches[8],
+                    prof           : sectionMatches[9],
+
+                    dateFormatType : this.dateFormatType,
+                    classDays      : sectionMatches[5],
+                    startTime      : sectionMatches[6],
+                    endTime        : sectionMatches[7],
+                    startDate      : sectionMatches[10],
+                    endDate        : sectionMatches[11],
                 });
                 this.courses.push(course);
             }
@@ -64,10 +69,7 @@ class QuestCalendarExporter {
         if (courseLoopCount === 0 || courseLoopCount >= Config.MAX_COURSES) {
             // The search probably failed
             // Got an infinite loop or found nothing
-            alert('Unable to generate iCalendar file! Please submit an issue on GitHub.');
-            return false;
-        } else {
-            return true;
+            throw 'Failed Search';
         }
     }
 
@@ -156,7 +158,7 @@ class QuestCalendarExporter {
                 ''
             )                                           +
             patternOrTBA(
-                '[\\w\\ \\-\\,\\s]+'                        + // Professor
+                '[A-Za-z_\\ \\-\\,\\s]+'                    + // Professor
                 ''
             )                                           +
             '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})\\ -\\ '   + // Start date

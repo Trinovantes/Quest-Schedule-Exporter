@@ -17,6 +17,7 @@ class Course {
             this._startTimeOnFirstDate,
             this._endTimeOnFirstDate,
         ] = Course._parseDateTime(
+            options.dateFormatType,
             options.classDays,
             options.startDate,
             options.endDate,
@@ -55,37 +56,65 @@ class Course {
         return $.trim(flatString);
     }
 
-    static _parseDate(dateString) {
-        // Assume dateString is XX/XX/XXXX
+    static _parseDate(dateFormatType, dateString) {
+        // Assume dateString is 8 digits with 2 slashes in between (10 characters total)
 
-        const LANGUAGE = window.navigator.userLanguage || window.navigator.language;
-        const args = dateString.split('/');
-        let date;
+        const args = dateString.split('/').map(i => parseInt(i));
+        let year, month, day;
 
-        switch (LANGUAGE) {
-            case 'en-US': {
-                // MM/DD/YYYY
-                date = new Date(args[2], args[0] - 1, args[1]);
+        switch (dateFormatType) {
+            case 'DD/MM/YYYY': {
+                year = args[2];
+                month = args[1] - 1;
+                day = args[0];
                 break;
             }
 
-            case 'en-GB':
-            case 'en-CA': {
-                // DD/MM/YYYY
-                date = new Date(args[2], args[1] - 1, args[0]);
+            case 'MM/DD/YYYY': {
+                year = args[2];
+                month = args[0] - 1;
+                day = args[1];
+                break;
+            }
+
+            case 'YYYY/MM/DD': {
+                year = args[0];
+                month = args[1] - 1;
+                day = args[2];
+                break;
+            }
+
+            case 'YYYY/DD/MM': {
+                year = args[0];
+                month = args[2] - 1;
+                day = args[1];
+                break;
+            }
+
+            case 'MM/YYYY/DD': {
+                year = args[1];
+                month = args[0] - 1;
+                day = args[2];
+                break;
+            }
+
+            case 'DD/YYYY/MM': {
+                year = args[1];
+                month = args[2] - 1;
+                day = args[0];
                 break;
             }
 
             default: {
                 // ¯\_(ツ)_/¯
-                date = new Date(dateString);
+                return new Date(dateString);
             }
         }
 
-        return date;
+        return new Date(year, month, day);
     }
 
-    static _parseDateTime(classDays, startDateString, endDateString, startTimeString, endTimeString) {
+    static _parseDateTime(dateFormatType, classDays, startDateString, endDateString, startTimeString, endTimeString) {
         const daysWithClasses = classDays
             .replace(/Th/g, 'H') // Replace 'Th' with H key
             .toLowerCase();      // Set to lowercase to match keys in the above mappings
@@ -119,7 +148,7 @@ class Course {
         // otherwise (e.g. midterm), then return undefined
         const untilDate = (function() {
             if (startDateString !== endDateString) {
-                let lastDateOfClass = Course._parseDate(endDateString);
+                let lastDateOfClass = Course._parseDate(dateFormatType, endDateString);
                 lastDateOfClass.setHours(23);
                 lastDateOfClass.setMinutes(59);
                 return lastDateOfClass;
@@ -137,10 +166,16 @@ class Course {
                 f: 5,
             };
 
-            let firstDate = Course._parseDate(startDateString);
+            let firstDate = Course._parseDate(dateFormatType, startDateString);
             let daysWithClassesNumbers = daysWithClasses.split('').map(d => WEEKDAY_NUMBER[d]);
 
-            while (!daysWithClassesNumbers.includes(firstDate.getDay())) {
+            let dayCounter = 0;
+            let MAX_DAY_ADVANCEMENT = 365;
+            while (!daysWithClassesNumbers.includes(firstDate.getDay()) && dayCounter++ < MAX_DAY_ADVANCEMENT) {
+                if (dayCounter === MAX_DAY_ADVANCEMENT) {
+                    throw 'Invalid first date of class';
+                }
+
                 firstDate.setDate(firstDate.getDate() + 1);
             }
 

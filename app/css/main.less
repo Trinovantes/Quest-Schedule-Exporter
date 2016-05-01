@@ -64,9 +64,22 @@ form#mainForm{
     div.formGroup{
         margin-bottom: 20px;
 
+        label{
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+
+            span{
+                font-weight: normal;
+                cursor: help;
+            }
+        }
+
         textarea,
-        input{
+        input,
+        select{
             box-sizing: border-box;
+            background: #fff;
             border: 1px solid #999;
             display: block;
             margin: 0;
@@ -76,12 +89,6 @@ form#mainForm{
             &:focus{
                 background: lighten(yellow, 40%);
             }
-        }
-
-        label{
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
         }
     }
 

@@ -26,12 +26,17 @@ $(document).ready(function() {
     $('form#mainForm').submit(function(event) {
         event.preventDefault();
 
+        let dateFormatType = $('select#dateFormatType').val();
         let questData = $('textarea#questData').val();
         let summary = $('input#summary').val();
         let description = $('input#description').val();
 
-        let exporter = new QuestCalendarExporter(questData, summary, description);
-        exporter.run();
+        try {
+            let exporter = new QuestCalendarExporter(dateFormatType, questData, summary, description);
+            exporter.run();
+        } catch (e) {
+            alert('Unable to generate iCalendar file! Please submit an issue on GitHub.');
+        }
     });
 
 });
