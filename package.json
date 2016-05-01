@@ -1,6 +1,6 @@
 {
-  "name": "quest-exporter",
-  "description": "Quest Exporter",
+  "name": "quest-schedule-exporter",
+  "description": "Quest Schedule Exporter",
   "repository": {
     "type": "git",
     "url": "https://github.com/Trinovantes/Quest-Schedule-Exporter"
