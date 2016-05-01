@@ -1,6 +1,7 @@
 module.exports = {
 
     MAX_COURSES: 20, // Nobody can take this many courses, right?
+    MAX_SECTIONS: 5, // LEC, TUT, LAB, ??? (Going to be a bit lenient here and allow more loop iterations just in case)
 
     filename: 'quest_schedule.ics',
 

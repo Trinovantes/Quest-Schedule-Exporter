@@ -21,19 +21,20 @@ class QuestCalendarExporter {
     _parseData() {
         let courseRegex = new RegExp(this._createCourseRegex(), 'g');
         let sectionRegex = new RegExp(this._createSectionRegex(), 'g');
-        let loopCount = 0;
 
+        let courseLoopCount = 0;
         let courseMatches = null;
         while (true) {
             courseMatches = courseRegex.exec(this.questData);
-            if (courseMatches === null || loopCount++ > Config.MAX_COURSES) {
+            if (courseMatches === null || courseLoopCount++ > Config.MAX_COURSES) {
                 break;
             }
 
+            let sectionLoopCount = 0;
             let sectionMatches = null;
             while (true) {
                 sectionMatches = sectionRegex.exec(courseMatches[0]);
-                if (sectionMatches === null || loopCount++ > Config.MAX_COURSES) {
+                if (sectionMatches === null || sectionLoopCount++ > Config.MAX_SECTIONS) {
                     break;
                 }
 
@@ -60,7 +61,7 @@ class QuestCalendarExporter {
             }
         }
 
-        if (loopCount === 0 || loopCount >= Config.MAX_COURSES) {
+        if (courseLoopCount === 0 || courseLoopCount >= Config.MAX_COURSES) {
             // The search probably failed
             // Got an infinite loop or found nothing
             alert('Unable to generate iCalendar file! Please submit an issue on GitHub.');
