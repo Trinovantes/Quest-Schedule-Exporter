@@ -16,8 +16,7 @@ var Config = {
         'app/js/**/*.hbs',
     ],
     stylesheets: [
-        'app/css/**/*.less', // Since LESS is a superset of CSS, the preprocessor shouldn't affect regular CSS files
-        'app/css/**/*.css',
+        'app/css/main.less',
     ],
     images: [
         'app/img/**/*'
@@ -47,25 +46,19 @@ gulp.task('webserver', function() {
 //------------------------------------------------------------------------------
 
 gulp.task('css', function() {
-    var gulpif = require('gulp-if');
     var less = require('gulp-less');
     var path = require('path');
-    var minify_css = require('gulp-minify-css');
-    var source_maps = require('gulp-sourcemaps');
-    var concat = require('gulp-concat');
+    var clean_css = require('gulp-clean-css');
+    var rename = require('gulp-rename');
 
     gulp.src(Config.stylesheets)
-    
-        .pipe(gulpif(Config.DEBUG, source_maps.init({ loadMaps: true })))
-            .pipe(less({
-                paths: [
-                    path.join(__dirname, 'app/css'),
-                ]
-            }))
-            .pipe(concat('app.css'))
-            .pipe(minify_css())
-        .pipe(gulpif(Config.DEBUG, source_maps.write({ sourceRoot: '/map-css' })))
-
+        .pipe(less({
+            paths: [
+                path.join(__dirname, 'app/css'),
+            ],
+        }))
+        .pipe(clean_css())
+        .pipe(rename('app.css'))
         .pipe(gulp.dest(Config.output + '/css'))
         .pipe(connect.reload());
 });
