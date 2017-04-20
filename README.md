@@ -69,9 +69,26 @@ server {
 }
 
 server {
-    listen      80;
+    listen      443 ssl;
+    listen [::]:443 ssl;
     server_name www.questscheduleexporter.xyz;
     autoindex   off;
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/questscheduleexporter.xyz/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/questscheduleexporter.xyz/privkey.pem;
+    ssl_session_timeout 1d;
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+    ssl_prefer_server_ciphers on;
+
+    # OCSP stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+    add_header Strict-Transport-Security max-age=15768000;
 
     if ($request_uri ~ '/index.html') {
         rewrite ^ /$1 permanent;
