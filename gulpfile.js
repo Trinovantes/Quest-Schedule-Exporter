@@ -104,7 +104,7 @@ gulp.task('js-browserify', function() {
         .on('error', gulp_util.log)
         .pipe(source('app.js')) // Treats stream as a single dummy file
         .pipe(buffer()) // Buffers stream into single file
-        
+
         .pipe(gulpif(Config.DEBUG, source_maps.init({ loadMaps: true })))
             .pipe(gulpif(!Config.DEBUG, uglify()))
         .pipe(gulpif(Config.DEBUG, source_maps.write({ sourceRoot: '/map-js' })))
