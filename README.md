@@ -21,10 +21,13 @@ gulp debug
 
 # Deploy to Production
 
-These instructions are for deploying to a clean VPS host (e.g. DigitalOcean). This allows me to push changes to my website via the git command `git push prod master`.
+These instructions are for deploying to a clean Ubuntu VPS host (e.g. DigitalOcean). This setup allows us to push future website changes via the command `git push prod master`.
 
 First on the remote server:
 ```
+sudo mkdir -p /var/www/questscheduleexporter.xyz
+sudo chown ubuntu:ubuntu /var/www/questscheduleexporter.xyz
+
 mkdir questscheduleexporter.xyz.git && cd questscheduleexporter.xyz.git
 git init --bare
 ```
@@ -56,7 +59,7 @@ rm -Rf $TMP_GIT_CLONE
 exit
 ```
 
-Update the nginx configuration file (`/etc/nginx/sites-available/default`):
+Update the nginx configuration file (`/etc/nginx/sites-available/questscheduleexporter.xyz`):
 ```
 #-------------------------------------------------------------------------------
 # questscheduleexporter.xyz
@@ -64,8 +67,8 @@ Update the nginx configuration file (`/etc/nginx/sites-available/default`):
 
 server {
     listen 80;
-    server_name questscheduleexporter.xyz; 
-    
+    server_name questscheduleexporter.xyz www.questscheduleexporter.xyz;
+
     include /etc/nginx/snippets/letsencrypt.conf;
 
     location / {
@@ -74,14 +77,28 @@ server {
 }
 
 server {
+    listen 443;
+    server_name questscheduleexporter.xyz;
+
+#    ssl_certificate /etc/letsencrypt/live/questscheduleexporter.xyz/fullchain.pem;
+#    ssl_certificate_key /etc/letsencrypt/live/questscheduleexporter.xyz/privkey.pem;
+#    ssl_trusted_certificate /etc/letsencrypt/live/questscheduleexporter.xyz/fullchain.pem;
+#    include /etc/nginx/snippets/ssl.conf;
+
+    location / {
+        return 301 https://www.questscheduleexporter.ca$request_uri;
+    }
+}
+
+server {
     listen      443;
     server_name www.questscheduleexporter.xyz;
     autoindex   off;
-    
-    ssl_certificate /etc/letsencrypt/live/questscheduleexporter.xyz/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/questscheduleexporter.xyz/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/questscheduleexporter.xyz/fullchain.pem;
-    include /etc/nginx/snippets/ssl.conf;
+
+#    ssl_certificate /etc/letsencrypt/live/questscheduleexporter.xyz/fullchain.pem;
+#    ssl_certificate_key /etc/letsencrypt/live/questscheduleexporter.xyz/privkey.pem;
+#    ssl_trusted_certificate /etc/letsencrypt/live/questscheduleexporter.xyz/fullchain.pem;
+#    include /etc/nginx/snippets/ssl.conf;
 
     location / {
         root /var/www/questscheduleexporter.xyz/;
@@ -89,7 +106,15 @@ server {
 }
 ```
 
-Common nginx File (`/etc/nginx/snippets/ssl.conf`):
+The SSL options are initially commented out because those files do not exist yet. This will allow us to start Nginx for the initial authentication without getting `FileDoesNotExist` errors.
+
+
+Next symlink the config file to `sites-enabled`:
+```
+sudo ln -s /etc/nginx/sites-available/questscheduleexporter.xyz /etc/nginx/sites-enabled/
+```
+
+Create the common nginx File (`/etc/nginx/snippets/ssl.conf`):
 ```
 ssl on;
 
@@ -114,7 +139,7 @@ ssl_stapling on;
 ssl_stapling_verify on;
 ```
 
-Common nginx File (`/etc/nginx/snippets/letsencrypt.conf`):
+Create the common nginx File (`/etc/nginx/snippets/letsencrypt.conf`):
 ```
 location ^~ /.well-known/acme-challenge/ {
     default_type "text/plain";
@@ -122,7 +147,14 @@ location ^~ /.well-known/acme-challenge/ {
 }
 ```
 
+Now we can restart Nginx (`sudo systemctl restart nginx`) to host the non-SSL version for Let's Encrypt authentication challenge.
+```
+sudo certbot certonly --webroot -d questscheduleexporter.xyz -d www.questscheduleexporter.xyz --webroot-path /var/www/letsencrypt
+```
+
+After this, go back to `/etc/nginx/sites-available/questscheduleexporter.xyz` and uncomment the SSL options.
+
 Finally on the local machine:
 ```
-git remote add prod user@example.org:questscheduleexporter.xyz.git
+git remote add prod ubuntu@example.org:questscheduleexporter.xyz.git
 ```
