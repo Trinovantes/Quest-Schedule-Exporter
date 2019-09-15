@@ -1,7 +1,7 @@
 # Install Tools
 
 ```
-sudo apt-get install -y nodejs npm
+sudo apt install -y nodejs npm
 sudo ln -s `which nodejs` /usr/bin/node
 
 npm install -g gulp
@@ -59,7 +59,7 @@ rm -Rf $TMP_GIT_CLONE
 exit
 ```
 
-Update the nginx configuration file (`/etc/nginx/sites-available/questscheduleexporter.xyz`):
+Create the nginx configuration file (`/etc/nginx/sites-available/questscheduleexporter.xyz`):
 ```
 #-------------------------------------------------------------------------------
 # questscheduleexporter.xyz
@@ -86,7 +86,7 @@ server {
 #    include /etc/nginx/snippets/ssl.conf;
 
     location / {
-        return 301 https://www.questscheduleexporter.ca$request_uri;
+        return 301 https://www.questscheduleexporter.xyz$request_uri;
     }
 }
 
@@ -106,7 +106,7 @@ server {
 }
 ```
 
-The SSL options are initially commented out because those files do not exist yet. This will allow us to start Nginx for the initial authentication without getting `FileDoesNotExist` errors.
+The SSL options are initially commented out because those files do not exist yet. This will allow us to start nginx for the initial authentication without getting `FileDoesNotExist` errors.
 
 
 Next symlink the config file to `sites-enabled`:
@@ -114,7 +114,7 @@ Next symlink the config file to `sites-enabled`:
 sudo ln -s /etc/nginx/sites-available/questscheduleexporter.xyz /etc/nginx/sites-enabled/
 ```
 
-Create the common nginx File (`/etc/nginx/snippets/ssl.conf`):
+Create the common nginx file (`/etc/nginx/snippets/ssl.conf`):
 ```
 ssl on;
 
@@ -139,7 +139,7 @@ ssl_stapling on;
 ssl_stapling_verify on;
 ```
 
-Create the common nginx File (`/etc/nginx/snippets/letsencrypt.conf`):
+Create the common nginx file (`/etc/nginx/snippets/letsencrypt.conf`):
 ```
 location ^~ /.well-known/acme-challenge/ {
     default_type "text/plain";
@@ -147,7 +147,7 @@ location ^~ /.well-known/acme-challenge/ {
 }
 ```
 
-Now we can restart Nginx (`sudo systemctl restart nginx`) to host the non-SSL version for Let's Encrypt authentication challenge.
+Now we can restart nginx (`sudo systemctl restart nginx`) to host the non-SSL version for Let's Encrypt authentication challenge.
 ```
 sudo certbot certonly --webroot -d questscheduleexporter.xyz -d www.questscheduleexporter.xyz --webroot-path /var/www/letsencrypt
 ```
