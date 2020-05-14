@@ -1,6 +1,7 @@
 @import url(normalize.less);
 
 @red: #A94442;
+@padding: 20px;
 
 body{
     color: #333;
@@ -11,7 +12,7 @@ body{
 
 div.container{
     margin: 0 auto;
-    padding: 20px;
+    padding: (@padding * 2) @padding;
     width: 800px;
 }
 
@@ -20,7 +21,7 @@ noscript{
         color: @red;
         background: #F2DEDE;
         font-weight: bold;
-        padding: 0 20px;
+        padding: 0 @padding;
     }
 }
 
@@ -31,9 +32,8 @@ header{
         padding: 3px;
     }
 
-    h1.title{
-        display: inline-block;
-        position: relative;
+    h1, h2, p, ol{
+        margin: @padding 0;
     }
 }
 
@@ -41,10 +41,11 @@ form#mainForm{
     background: #eee;
     border: 1px solid #999;
     border-radius: 3px;
-    padding: 20px;
+    margin: @padding 0;
+    padding: @padding;
 
     div.formGroup{
-        margin-bottom: 20px;
+        margin-bottom: @padding;
 
         label{
             font-weight: bold;
@@ -80,7 +81,7 @@ form#mainForm{
         background: #efefef;
         border-left: 1px solid @border-color;
         border-right: 1px solid @border-color;
-        margin-bottom: 20px;
+        margin-bottom: @padding;
         width: 100%;
 
         tr{

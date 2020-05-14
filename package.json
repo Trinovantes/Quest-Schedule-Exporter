@@ -1,40 +1,11 @@
 {
-  "name": "quest-schedule-exporter",
-  "description": "Quest Schedule Exporter",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Trinovantes/Quest-Schedule-Exporter"
-  },
-  "license": "SEE LICENSE IN LICENSE",
-  "private": true,
-  "version": "0.0.0",
   "devDependencies": {
-    "babel-core": "^6.2.1",
-    "babel-polyfill": "^6.2.0",
-    "babel-preset-es2015": "^6.1.18",
-    "babelify": "^7.2.0",
-    "browserify": "^12.0.1",
-    "colors": "^1.1.2",
-    "gulp": "~3.9.0",
-    "gulp-clean-css": "^2.0.6",
-    "gulp-concat": "~2.6.0",
-    "gulp-connect": "~2.2.0",
-    "gulp-filter": "~3.0.1",
-    "gulp-flatten": "~0.2.0",
-    "gulp-if": "~2.0.0",
-    "gulp-jshint": "~1.11.2",
-    "gulp-less": "~3.0.3",
-    "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "~1.6.0",
-    "gulp-uglify": "~1.4.2",
-    "gulp-util": "^3.0.7",
-    "jshint-stylish": "~2.0.1",
-    "less-plugin-clean-css": "^1.5.1",
-    "stream-browserify": "^2.0.1",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "less": "^3.11.1",
+    "parcel-plugin-handlebars": "^0.4.4",
+    "typescript": "^3.9.2"
   },
-  "dependencies": {
-    "jquery": "^3.3.1"
+  "scripts": {
+    "build": "parcel build index.html --out-dir docs --no-source-maps",
+    "dev": "parcel index.html --out-dir docs"
   }
 }
