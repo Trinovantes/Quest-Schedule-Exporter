@@ -6,29 +6,46 @@ import Config from './config.json';
 
 type NullableDate = Date | null;
 
+enum Weekdays {
+    Mon = 'm',
+    Tues = 't',
+    Wed = 'w',
+    Thurs = 'h',
+    Fri = 'f',
+}
+
+const WeekdaysIndex: {[key in Weekdays]: number} = {
+    [Weekdays.Mon]: 1,
+    [Weekdays.Tues]: 2,
+    [Weekdays.Wed]: 3,
+    [Weekdays.Thurs]: 4,
+    [Weekdays.Fri]: 5,
+}
+
+const WeekdaysName: {[key in Weekdays]: string} = {
+    [Weekdays.Mon]: 'MO',
+    [Weekdays.Tues]: 'TU',
+    [Weekdays.Wed]: 'WE',
+    [Weekdays.Thurs]: 'TH',
+    [Weekdays.Fri]: 'FR',
+}
+
 export class Course {
+    private meta: {[key: string]: string};
+    private classDaysICal: string;
+    private untilDateICal: string;
+    private startTimeOnFirstDate: string;
+    private endTimeOnFirstDate: string;
 
-    _name: string;
-    _code: string;
-
-    _section: string;
-    _type: string;
-    _location: string;
-    _prof: string;
-
-    _classDaysICal: string;
-    _untilDateICal: string;
-    _startTimeOnFirstDate: string;
-    _endTimeOnFirstDate: string;
-
-    constructor({code, name, section, type, location, prof, dateFormat, classDays, startTime, endTime, startDate, endDate}) {
-        this._code     = code;
-        this._name     = name;
-
-        this._section  = flatten(section);
-        this._type     = flatten(type);
-        this._location = flatten(location);
-        this._prof     = flatten(prof);
+    constructor(code: string, name: string, section: string, type: string, location: string, prof: string, dateFormat: string, classDays: string, startTime: string, endTime: string, startDate: string, endDate: string) {
+        this.meta = {
+            code     : code,
+            name     : name,
+            section  : flatten(section),
+            type     : flatten(type),
+            location : flatten(location),
+            prof     : flatten(prof),
+        }
 
         //---------------------------------------------------------------------
         // Parse dates
@@ -37,7 +54,7 @@ export class Course {
         const daysWithClasses = classDays
             .replace(/Th/g, 'H') // Replace 'Th' with H key
             .toLowerCase()       // Set to lowercase to match keys in the above mappings
-        this._classDaysICal = convertDaysToICal(Array.from(daysWithClasses));
+        this.classDaysICal = convertDaysToICal(Array.from(daysWithClasses));
 
         // If it's a repeating event (e.g. lecture), then return a DateTime object
         // otherwise (e.g. midterm), then return undefined
@@ -51,21 +68,13 @@ export class Course {
             lastDateOfClass.setMinutes(59);
             return lastDateOfClass;
         })();
-        this._untilDateICal = convertToICalTimeString(untilDate);
+        this.untilDateICal = convertToICalTimeString(untilDate);
 
         // Advance start date of term to first day of class
         // e.g. term start on Jan 4 (Mon) but first day of a class is on Jan 5 (Tues)
         const firstDateOfClass : Date = (function() {
-            let WEEKDAY_NUMBER = {
-                m: 1,
-                t: 2,
-                w: 3,
-                h: 4,
-                f: 5,
-            };
-
             let firstDate = parseDate(dateFormat, startDate);
-            let daysWithClassesNumbers = daysWithClasses.split('').map(d => WEEKDAY_NUMBER[d]);
+            let daysWithClassesNumbers = daysWithClasses.split('').map(d => WeekdaysIndex[d as Weekdays]);
 
             let dayCounter = 0;
             let MAX_DAY_ADVANCEMENT = 365;
@@ -82,10 +91,14 @@ export class Course {
         })();
 
         // Parse the time in 12H format to return a DateTime object on the firstDateOfClass
-        let parseTime = function(timeString : string) {
-            let matches = timeString.match(/(1?\d)\:([0-5]\d)/);
-            let hour = parseInt(matches[1]);
-            let minute = parseInt(matches[2]);
+        const parseTime = function(timeString : string) : NullableDate {
+            const matches = timeString.match(/(1?\d)\:([0-5]\d)/);
+            if (!matches) {
+                return null
+            }
+
+            const hour = parseInt(matches[1]);
+            const minute = parseInt(matches[2]);
 
             let hoursOffset = 0;
             if (timeString.match(/PM/) && hour < 12) {
@@ -98,26 +111,26 @@ export class Course {
             return dateTime;
         };
 
-        this._startTimeOnFirstDate = convertToICalTimeString(parseTime(startTime));
-        this._endTimeOnFirstDate = convertToICalTimeString(parseTime(endTime));
+        this.startTimeOnFirstDate = convertToICalTimeString(parseTime(startTime));
+        this.endTimeOnFirstDate = convertToICalTimeString(parseTime(endTime));
     }
 
-    *printer(summary, description) : Generator<string> {
+    *printer(summary: string, description: string) : Generator<string> {
         yield 'BEGIN:VEVENT';
-        yield 'DTSTART;TZID=America/Toronto:' + this._startTimeOnFirstDate;
-        yield 'DTEND;TZID=America/Toronto:' + this._endTimeOnFirstDate;
+        yield 'DTSTART;TZID=America/Toronto:' + this.startTimeOnFirstDate;
+        yield 'DTEND;TZID=America/Toronto:' + this.endTimeOnFirstDate;
 
-        if (this._untilDateICal) {
+        if (this.untilDateICal) {
             yield '' +
                 'RRULE:FREQ=WEEKLY'             + ';' +
-                'UNTIL=' + this._untilDateICal  + ';' +
+                'UNTIL=' + this.untilDateICal  + ';' +
                 'WKST=SU'                       + ';' +
-                'BYDAY=' + this._classDaysICal
+                'BYDAY=' + this.classDaysICal
             ;
         }
 
         yield 'SUMMARY:' + sanitizeOutput(this.fillPlaceholders(summary));
-        yield 'LOCATION:' + this._location;
+        yield 'LOCATION:' + this.meta.location;
         yield 'DESCRIPTION:' + sanitizeOutput(this.fillPlaceholders(description));
         yield 'END:VEVENT';
     }
@@ -126,9 +139,9 @@ export class Course {
         let ret = template;
 
         for (let placeholder of Config.placeholders) {
-            let key = '_' + placeholder.placeholder.substring(1);
-            let regex = new RegExp('(' + placeholder.placeholder + ')', 'g');
-            ret = ret.replace(regex, this[key]);
+            const key = placeholder.placeholder.substring(1)
+            const regex = new RegExp('(' + placeholder.placeholder + ')', 'g');
+            ret = ret.replace(regex, this.meta[key]);
         }
 
         return ret;
@@ -142,15 +155,7 @@ export class Course {
 // Parse the days with classes string from quest and return a comma delimited list
 // of weekdays in iCalendar format
 function convertDaysToICal(days : Array<string>) {
-    let WEEKDAY_NAME = {
-        m: 'MO',
-        t: 'TU',
-        w: 'WE',
-        h: 'TH',
-        f: 'FR',
-    };
-
-    return days.map(day => WEEKDAY_NAME[day]).join(',');
+    return days.map(day => WeekdaysName[day as Weekdays]).join(',');
 };
 
 function convertToICalTimeString(dateTime : NullableDate) : string {
@@ -180,8 +185,8 @@ function padNumber(n : number) : string {
 }
 
 // Replace all whitespace (line breaks, multiple spaces) with a single space
-function flatten(string) : string {
-    let flatString = string.replace(/\s+/g, ' ');
+function flatten(s: string) : string {
+    let flatString = s.replace(/\s+/g, ' ');
     return flatString.trim();
 }
 

@@ -1,11 +1,30 @@
 {
+  "private": true,
+  "dependencies": {
+    "jquery": "^3.5.1"
+  },
   "devDependencies": {
-    "less": "^3.11.1",
-    "parcel-plugin-handlebars": "^0.4.4",
-    "typescript": "^3.9.2"
+    "@types/jquery": "^3.5.4",
+    "css-loader": "^4.3.0",
+    "file-loader": "^6.1.0",
+    "handlebars": "^4.7.6",
+    "handlebars-loader": "^1.7.1",
+    "html-webpack-plugin": "^4.5.0",
+    "less": "^3.12.2",
+    "less-loader": "^7.0.2",
+    "sass": "^1.26.11",
+    "sass-loader": "^10.0.2",
+    "style-loader": "^1.2.1",
+    "ts-loader": "^8.0.4",
+    "typescript": "^4.0.3",
+    "url-loader": "^4.1.0",
+    "vue-loader": "^15.9.3",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.1.0",
+    "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "build": "parcel build index.html --out-dir build --no-source-maps",
-    "dev": "parcel index.html --out-dir build"
+    "build": "webpack",
+    "dev": "webpack serve"
   }
 }

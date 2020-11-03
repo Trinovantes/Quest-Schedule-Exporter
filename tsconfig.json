@@ -1,7 +1,18 @@
 {
   "compilerOptions": {
-    "lib": "ES6",
+    "strict": true,
+    "inlineSourceMap": true,
+
+    "target": "es2017",
+    "module": "esnext",
+    "moduleResolution": "node",
+
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   }
 }

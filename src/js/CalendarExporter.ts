@@ -13,7 +13,7 @@ export class CalendarExporter {
     _description: string;
     _courses: Array<Course>;
 
-    constructor(dateFormatType, questData, summary, description) {
+    constructor(dateFormatType: string, questData: string, summary: string, description: string) {
         this._dateFormatType = dateFormatType;
         this._questData = questData;
         this._summary = summary;
@@ -26,18 +26,15 @@ export class CalendarExporter {
         this._parseData();
 
         // Returns a string of the calendar file
-        let ical = this._generateICal();
+        const ical = this._generateICal();
 
         // Downloads file to user's computer
         this._downloadFile(ical);
     }
 
     _parseData() {
-        let courseRegex = createCourseRegex();
-        let sectionRegex = createSectionRegex(this._questData);
-
-        console.log(courseRegex)
-        console.log(sectionRegex)
+        const courseRegex = createCourseRegex();
+        const sectionRegex = createSectionRegex(this._questData);
 
         let courseLoopCount = 0;
         let courseMatches = null;
@@ -52,7 +49,6 @@ export class CalendarExporter {
             if (!courseMatches) {
                 break;
             }
-            console.log(courseMatches)
 
             let sectionLoopCount = 0;
             let sectionMatches = null;
@@ -68,32 +64,28 @@ export class CalendarExporter {
                     break;
                 }
 
-                console.log(sectionMatches)
-
                 if (sectionMatches[4] === 'TBA') {
                     continue;
                 }
 
-                let course = new Course({
-                    code       : courseMatches[1],
-                    name       : courseMatches[2],
+                const course = new Course(
+                    courseMatches[1],
+                    courseMatches[2],
 
-                    section    : sectionMatches[2],
-                    type       : sectionMatches[3],
-                    location   : sectionMatches[8],
-                    prof       : sectionMatches[9],
+                    sectionMatches[2],
+                    sectionMatches[3],
+                    sectionMatches[8],
+                    sectionMatches[9],
 
-                    dateFormat : this._dateFormatType,
-                    classDays  : sectionMatches[5],
-                    startTime  : sectionMatches[6],
-                    endTime    : sectionMatches[7],
-                    startDate  : sectionMatches[10],
-                    endDate    : sectionMatches[11],
-                });
+                    this._dateFormatType,
+                    sectionMatches[5],
+                    sectionMatches[6],
+                    sectionMatches[7],
+                    sectionMatches[10],
+                    sectionMatches[11],
+                );
                 this._courses.push(course);
             }
-
-            console.log('')
         }
 
         if (courseLoopCount === 0 || courseLoopCount >= Config.MAX_COURSES) {
@@ -101,7 +93,6 @@ export class CalendarExporter {
             // Got an infinite loop or found nothing
             throw 'Failed Search';
         }
-                console.log(this._courses);
     }
 
     // See RFC2445 for more details
@@ -109,7 +100,7 @@ export class CalendarExporter {
     _generateICal() : string {
         let calendarContent = '';
 
-        let addLine = function(line) {
+        const addLine = function(line: string) {
             calendarContent += line + '\n';
         };
 
@@ -117,11 +108,11 @@ export class CalendarExporter {
         addLine('VERSION:2.0');
         addLine('PRODID:-//www.QuestScheduleExporter.xyz//EN');
 
-        for (let course of this._courses) {
+        for (const course of this._courses) {
             // I hate JavaScript
             // https://stackoverflow.com/a/47190038
-            let printer = course.printer(this._summary, this._description);
-            let next;
+            const printer = course.printer(this._summary, this._description);
+            let next: IteratorResult<string>;
             while (!(next = printer.next()).done) {
                 addLine(next.value);
             }
@@ -132,8 +123,8 @@ export class CalendarExporter {
         return calendarContent;
     }
 
-    _downloadFile(content) {
-        let element = document.createElement('a');
+    _downloadFile(content: string) {
+        const element = document.createElement('a');
         element.setAttribute('href', 'data:text/calendar;charset=utf-8,' + encodeURIComponent(content));
         element.setAttribute('download', Config.filename);
         element.style.display = 'none';
@@ -149,14 +140,14 @@ export class CalendarExporter {
 //-------------------------------------------------------------------------
 
 function createCourseRegex() : RegExp {
-    let courseHeaderPattern = '(\\w{2,5} \\d{3,4}) - (.*)';
+    const courseHeaderPattern = '(\\w{2,5} \\d{3,4}) - (.*)';
 
-    let anythingBeforePattern = function (pattern) {
+    const anythingBeforePattern = function (pattern: string) {
         return '(?:(?!' + pattern + ')[\\w|\\W])*';
     };
 
     /*jshint multistr: true */
-    let regex =
+    const regex =
         courseHeaderPattern                           + // Course code and name
         anythingBeforePattern(courseHeaderPattern)    +
     '';
@@ -170,16 +161,16 @@ function createSectionRegex(questData : string) : RegExp {
     const timePattern = (function() {
         const timePattern12h = '1?\\d\\:[0-5]\\d[AP]M';
         const timePattern24h = '[0-2]\\d\\:[0-5]\\d';
-        let is24h = /([0-5]\d[A|P]M)/.exec(questData) === null;
+        const is24h = /([0-5]\d[A|P]M)/.exec(questData) === null;
         return is24h ? timePattern24h : timePattern12h;
     })();
 
-    const patternOrTBA = function(pattern) {
+    const patternOrTBA = function(pattern: string) {
         return '(' + pattern + '|TBA)\\s*';
     };
 
     /*jshint multistr: true */
-    let regex =
+    const regex =
         '(' + classNumberPattern + ')\\s*'          + // Class number
         '(\\d{3}\\s*)'                              + // Section
         '(\\w{3}\\s*)'                              + // Type (LEC, SEM, STU, LAB)

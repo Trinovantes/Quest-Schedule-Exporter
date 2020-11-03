@@ -1,16 +1,10 @@
----
-title: Quest Schedule Exporter
----
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ title }}</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Quest Schedule Exporter</title>
     <meta name="viewport" content="width=device-width">
-
     <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="/css/main.less">
 </head>
 <body>
 
@@ -29,7 +23,7 @@ title: Quest Schedule Exporter
             This unofficial tool allows University of Waterloo students to export their schedule from Quest. This generates an iCalendar file that you can import anywhere. Everything is done on the client-side using JavaScript so you can rest assured that your personal information won't be leaked.
         </p>
         <p>
-            This tool was originally created by <a href="http://viktorstanchev.com"/>Viktor Stanchev</a>. This page is a JavaScript port created and rehosted by <a href="https://www.stephenli.ca">Stephen Li</a>. The source code is available on <a href="https://github.com/Trinovantes/Quest-Schedule-Exporter">GitHub</a>.
+            This tool was originally created by <a href="http://viktorstanchev.com">Viktor Stanchev</a>. This page is a JavaScript port created and rehosted by <a href="https://www.stephenli.ca">Stephen Li</a>. The source code is available on <a href="https://github.com/Trinovantes/Quest-Schedule-Exporter">GitHub</a>.
         </p>
 
         <h2>How to use:</h2>
@@ -61,11 +55,11 @@ title: Quest Schedule Exporter
             </div>
             <div class="formGroup">
                 <label for="summary">Summary:</label>
-                <input type="text" title="This is the title of the event in your calendar" name="summary" id="summary" value="{{ config.summary }}">
+                <input type="text" title="This is the title of the event in your calendar" name="summary" id="summary" value="{{ summary }}">
             </div>
             <div class="formGroup">
                 <label for="description">Description:</label>
-                <input type="text" title="This is the detailed description of the event in your calendar" name="description" id="description" value="{{ config.description }}">
+                <input type="text" title="This is the detailed description of the event in your calendar" name="description" id="description" value="{{ description }}">
             </div>
             <table id="placeholders">
                 <thead>
@@ -76,7 +70,7 @@ title: Quest Schedule Exporter
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each config.placeholders}}
+                    {{#each placeholders}}
                     <tr>
                         <td><code>{{ placeholder }}</code></td>
                         <td>{{ description }}</td>
@@ -90,8 +84,7 @@ title: Quest Schedule Exporter
     </article>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="./js/main.ts"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 
 </body>
 </html>
