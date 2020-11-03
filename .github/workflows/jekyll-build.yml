@@ -1,0 +1,53 @@
+name: Jekyll Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  BUILD_DIR: build
+  WORKTREE_DIR: gh-pages
+
+jobs:
+  jekyll_build:
+    name: Jekyll Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
+      - name: Set up gh-pages Worktree
+        run: |
+          git fetch
+          git worktree add $WORKTREE_DIR gh-pages
+          find WORKTREE_DIR -not -path WORKTREE_DIR -not -path '*/\.*' -not -name 'CNAME' | xargs rm -rf
+          mv $BUILD_DIR/* $WORKTREE_DIR
+
+      - name: Commit gh-pages Branch
+        working-directory: ${{ env.WORKTREE_DIR }}
+        run: |
+          git config --global user.name 'Jekyll Build'
+          git config --global user.email '<>'
+          git add .
+          git commit -m "Jekyll Build ($(date +'%Y-%m-%d %R %Z'))" || true
+          git push

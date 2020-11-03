@@ -5,7 +5,7 @@
     "typescript": "^3.9.2"
   },
   "scripts": {
-    "build": "parcel build index.html --out-dir docs --no-source-maps",
-    "dev": "parcel index.html --out-dir docs"
+    "build": "parcel build index.html --out-dir build --no-source-maps",
+    "dev": "parcel index.html --out-dir build"
   }
 }
