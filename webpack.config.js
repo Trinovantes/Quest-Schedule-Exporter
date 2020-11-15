@@ -1,10 +1,20 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const isDev = (process.env.NODE_ENV === 'development')
+
 module.exports = {
     target: 'web',
-    devtool: 'inline-source-map',
+    devtool: isDev
+        ? 'inline-source-map'
+        : false,
+
     entry: path.resolve(__dirname, './src/js/main.ts'),
+    output: {
+        filename: isDev
+            ? '[name].js'
+            : '[name].[contenthash].js',
+    },
 
     resolve: {
         extensions: ['.ts', '.js', '.json', '.css'],
