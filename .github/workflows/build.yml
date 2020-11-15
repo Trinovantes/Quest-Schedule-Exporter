@@ -1,4 +1,4 @@
-name: Jekyll Build
+name: Build
 
 on:
   workflow_dispatch:
@@ -11,24 +11,20 @@ env:
   WORKTREE_DIR: gh-pages
 
 jobs:
-  jekyll_build:
-    name: Jekyll Build
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Cache node modules
+      - name: Cache node_modules
         uses: actions/cache@v2
         env:
           cache-name: cache-node-modules
         with:
-          path: ~/.npm
+          path: '**/node_modules'
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock', '**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - name: Install Dependencies
         run: yarn install
@@ -40,14 +36,14 @@ jobs:
         run: |
           git fetch
           git worktree add $WORKTREE_DIR gh-pages
-          find $WORKTREE_DIR -not -path $WORKTREE_DIR -not -path '*/\.*' -not -name 'CNAME' | xargs rm -rf
+          find $WORKTREE_DIR -not -path $WORKTREE_DIR -not -path '*/\.*' -not -name 'CNAME' | xargs -t rm -rf
           mv $BUILD_DIR/* $WORKTREE_DIR
 
       - name: Commit gh-pages Branch
         working-directory: ${{ env.WORKTREE_DIR }}
         run: |
-          git config --global user.name 'Jekyll Build'
+          git config --global user.name 'Build'
           git config --global user.email '<>'
           git add .
-          git commit -m "Jekyll Build ($(date +'%Y-%m-%d %R %Z'))" || true
+          git commit -m "Build ($(date +'%Y-%m-%d %R %Z'))" || true
           git push
