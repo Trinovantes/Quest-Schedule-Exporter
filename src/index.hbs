@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quest Schedule Exporter</title>
+    <title>{{ pageTitle }}</title>
     <meta name="viewport" content="width=device-width">
+    <meta name="description" content="{{ pageDesc }}">
     <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
 </head>
 <body>
@@ -18,9 +19,9 @@
 
 <div class="container">
     <header>
-        <h1 class="title">Quest Schedule Exporter</h1>
+        <h1 class="title">{{ pageTitle }}</h1>
         <p>
-            This unofficial tool allows University of Waterloo students to export their schedule from Quest. This generates an iCalendar file that you can import anywhere. Everything is done on the client-side using JavaScript so you can rest assured that your personal information won't be leaked.
+            {{ pageDesc }}
         </p>
         <p>
             This tool was originally created by <a href="http://viktorstanchev.com">Viktor Stanchev</a>. This page is a JavaScript port created and rehosted by <a href="https://www.stephenli.ca">Stephen Li</a>. The source code is available on <a href="https://github.com/Trinovantes/Quest-Schedule-Exporter">GitHub</a>.
