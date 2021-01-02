@@ -6,28 +6,22 @@ import Config from './config.json'
 
 type NullableDate = Date | null
 
-enum Weekdays {
-    Mon = 'm',
-    Tues = 't',
-    Wed = 'w',
-    Thurs = 'h',
-    Fri = 'f',
+type Weekday = 'm' | 't' | 'w' | 'h' | 'f'
+
+const WeekdayIndex: {[key in Weekday]: number} = {
+    m: 1,
+    t: 2,
+    w: 3,
+    h: 4,
+    f: 5,
 }
 
-const WeekdaysIndex: {[key in Weekdays]: number} = {
-    [Weekdays.Mon]: 1,
-    [Weekdays.Tues]: 2,
-    [Weekdays.Wed]: 3,
-    [Weekdays.Thurs]: 4,
-    [Weekdays.Fri]: 5,
-}
-
-const WeekdaysName: {[key in Weekdays]: string} = {
-    [Weekdays.Mon]: 'MO',
-    [Weekdays.Tues]: 'TU',
-    [Weekdays.Wed]: 'WE',
-    [Weekdays.Thurs]: 'TH',
-    [Weekdays.Fri]: 'FR',
+const WeekdayName: {[key in Weekday]: string} = {
+    m: 'MO',
+    t: 'TU',
+    w: 'WE',
+    h: 'TH',
+    f: 'FR',
 }
 
 export class Course {
@@ -74,7 +68,7 @@ export class Course {
         // e.g. term start on Jan 4 (Mon) but first day of a class is on Jan 5 (Tues)
         const firstDateOfClass: Date = (function() {
             const firstDate = parseDate(dateFormat, startDate)
-            const daysWithClassesNumbers = daysWithClasses.split('').map((d) => WeekdaysIndex[d as Weekdays])
+            const daysWithClassesNumbers = daysWithClasses.split('').map((d) => WeekdayIndex[d as Weekday])
 
             let dayCounter = 0
             const MAX_DAY_ADVANCEMENT = 365
@@ -154,7 +148,7 @@ export class Course {
 // Parse the days with classes string from quest and return a comma delimited list
 // of weekdays in iCalendar format
 function convertDaysToICal(days: Array<string>) {
-    return days.map((day) => WeekdaysName[day as Weekdays]).join(',')
+    return days.map((day) => WeekdayName[day as Weekday]).join(',')
 }
 
 function convertToICalTimeString(dateTime: NullableDate): string {

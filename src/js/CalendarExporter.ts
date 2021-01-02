@@ -22,16 +22,16 @@ export class CalendarExporter {
 
     run(): void {
         // Store courses into 'this.courses' array
-        this._parseData()
+        this.parseData()
 
         // Returns a string of the calendar file
-        const ical = this._generateICal()
+        const ical = this.generateICal()
 
         // Downloads file to user's computer
-        this._downloadFile(ical)
+        this.downloadFile(ical)
     }
 
-    _parseData(): void {
+    private parseData(): void {
         const courseRegex = createCourseRegex()
         const sectionRegex = createSectionRegex(this._questData)
 
@@ -96,7 +96,7 @@ export class CalendarExporter {
 
     // See RFC2445 for more details
     // https://www.ietf.org/rfc/rfc2445.txt
-    _generateICal(): string {
+    private generateICal(): string {
         let calendarContent = ''
 
         const addLine = function(line: string) {
@@ -122,7 +122,7 @@ export class CalendarExporter {
         return calendarContent
     }
 
-    _downloadFile(content: string): void {
+    private downloadFile(content: string): void {
         const element = document.createElement('a')
         element.setAttribute('href', 'data:text/calendar;charset=utf-8,' + encodeURIComponent(content))
         element.setAttribute('download', Config.filename)

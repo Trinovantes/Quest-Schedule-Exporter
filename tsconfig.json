@@ -1,18 +1,27 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "inlineSourceMap": true,
+    "compilerOptions": {
+        "strict": true,
+        "sourceMap": true,
 
-    "target": "es2017",
-    "module": "esnext",
-    "moduleResolution": "node",
+        "target": "es2017",
+        "module": "esnext",
+        "moduleResolution": "node",
 
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
 
-    "noUnusedLocals": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-  }
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+    },
+    "exclude": [
+        "node_modules",
+        "dist*",
+    ],
+    "include": [
+        "**/*",
+        ".eslintrc.js",
+        "webpack.config.js",
+    ],
 }

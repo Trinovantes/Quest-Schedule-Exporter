@@ -1,47 +1,45 @@
 {
-  "pageTitle": "Quest Schedule Exporter",
-  "pageDesc": "This unofficial tool allows University of Waterloo students to export their schedule from Quest. This generates an iCalendar file that you can import anywhere. Everything is done on the client-side using JavaScript so you can rest assured that your personal information won't be leaked.",
+    "pageTitle": "Quest Schedule Exporter",
+    "pageDesc": "This unofficial tool allows University of Waterloo students to export their schedule from Quest. This generates an iCalendar file that you can import anywhere. Everything is done on the client-side using JavaScript so you can rest assured that your personal information won't be leaked.",
 
-  "MAX_COURSES": 20,
-  "MAX_SECTIONS": 5,
+    "MAX_COURSES": 20,
+    "MAX_SECTIONS": 5,
 
-  "filename": "quest_schedule.ics",
+    "filename": "quest_schedule.ics",
 
-  "placeholders": [
-    {
-      "placeholder": "@code",
-      "description": "Course code",
-      "example":     "CS 452"
-    },
-    {
-      "placeholder": "@section",
-      "description": "Course section number",
-      "example":     "001"
-    },
-    {
-      "placeholder": "@name",
-      "description": "Name of the course",
-      "example":     "Real-time Programming"
-    },
-    {
-      "placeholder": "@type",
-      "description": "Type of course",
-      "example":     "LEC"
-    },
-    {
-      "placeholder": "@location",
-      "description": "Room for the course",
-      "example":     "DWE 3522A"
-    },
-    {
-      "placeholder": "@prof",
-      "description": "Instructor for the course",
-      "example":     "William B Cowan"
-    }
-  ],
+    "placeholders": [
+        {
+            "placeholder": "@code",
+            "description": "Course code",
+            "example":     "CS 452"
+        },
+        {
+            "placeholder": "@section",
+            "description": "Course section number",
+            "example":     "001"
+        },
+        {
+            "placeholder": "@name",
+            "description": "Name of the course",
+            "example":     "Real-time Programming"
+        },
+          {
+            "placeholder": "@type",
+            "description": "Type of course",
+            "example":     "LEC"
+        },
+        {
+            "placeholder": "@location",
+            "description": "Room for the course",
+            "example":     "DWE 3522A"
+        },
+        {
+            "placeholder": "@prof",
+            "description": "Instructor for the course",
+            "example":     "William B Cowan"
+        }
+    ],
 
-  "summary": "@code @type in @location",
-
-  "description": "@code-@section: @name (@type) in @location with @prof"
-
+    "summary": "@code @type in @location",
+    "description": "@code-@section: @name (@type) in @location with @prof"
 }

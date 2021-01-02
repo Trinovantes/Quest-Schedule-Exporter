@@ -8,8 +8,6 @@ module.exports = {
     root: true,
 
     parserOptions: {
-        // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/parser#configuration
-        // https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
         parser: '@typescript-eslint/parser',
         project: path.resolve(__dirname, './tsconfig.json'),
         tsconfigRootDir: __dirname,
@@ -23,23 +21,23 @@ module.exports = {
         node: true,
     },
 
-    // Rules order is important, please avoid shuffling them
-    extends: [
-        // Base ESLint recommended rules
-        // 'eslint:recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-
-        'standard',
-    ],
+    // Disable warnings for variables that are accessed but not defined in same file
+    globals: {
+        DEFINE: 'readonly',
+    },
 
     plugins: [
+        'import',
+        'node',
+        'promise',
+        'standard',
         '@typescript-eslint',
     ],
 
-    // Disable warnings for variables that are accessed but not defined in same file
-    globals: {
-    },
+    extends: [
+        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    ],
 
     rules: {
         'generator-star-spacing': ['error', 'before'],
@@ -64,8 +62,6 @@ module.exports = {
         indent: ['error', 4, {
             SwitchCase: 1,
         }],
-
-        'no-lone-blocks': 'off',
 
         '@typescript-eslint/type-annotation-spacing': 'error',
         '@typescript-eslint/restrict-template-expressions': ['error', {

@@ -1,10 +1,12 @@
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+import path from 'path'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
 const isDev = (process.env.NODE_ENV === 'development')
 
 module.exports = {
     target: 'web',
+    mode: process.env.NODE_ENV,
     devtool: isDev
         ? 'inline-source-map'
         : false,
@@ -17,11 +19,15 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.ts', '.js', '.json', '.css'],
+        extensions: ['.ts', '.js', '.json', '.css', '.less'],
         modules: [
             path.resolve(__dirname, './src'),
             'node_modules',
         ],
+    },
+
+    externals: {
+        jquery: 'jQuery',
     },
 
     module: {
@@ -34,7 +40,7 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: [
-                    'style-loader',
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     'less-loader',
                 ],
@@ -45,20 +51,24 @@ module.exports = {
             },
             {
                 test: /\.hbs$/,
-                use: "handlebars-loader",
+                use: 'handlebars-loader',
             },
         ],
     },
 
-    externals: {
-        jquery: 'jQuery'
-    },
-
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: isDev
+                ? '[name].css'
+                : '[name].[contenthash].css',
+            chunkFilename: isDev
+                ? '[id].css'
+                : '[id].[contenthash].css',
+        }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.hbs'),
             templateParameters: require('./src/js/config.json'),
             favicon: path.resolve(__dirname, './src/img/favicon.ico'),
         }),
     ],
-};
+}

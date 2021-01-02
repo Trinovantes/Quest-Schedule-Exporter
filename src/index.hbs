@@ -5,7 +5,6 @@
     <title>{{ pageTitle }}</title>
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="{{ pageDesc }}">
-    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 
@@ -42,7 +41,7 @@
     <article>
         <form id="mainForm">
             <div class="formGroup">
-                <label for="dateFormatType">Date Format: <span title="Quest exports dates differently based on your system's locale configuration. It's just easier to ask you to enter this once instead of making me iterate over all possible locales.">(?)</span></label>
+                <label for="dateFormatType">Date Format: <span title="Quest exports dates differently based on your system's locale configuration. It's just easier to ask you to enter this once instead of making me guess your system locale.">(?)</span></label>
                 <select name="dateFormatType" id="dateFormatType">
                     <option value="DD/MM/YYYY">DD/MM/YYYY</option>
                     <option value="MM/DD/YYYY" selected="selected">MM/DD/YYYY</option>
