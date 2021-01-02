@@ -13,6 +13,7 @@ module.exports = {
 
     entry: path.resolve(__dirname, './src/js/main.ts'),
     output: {
+        publicPath: '/',
         filename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
