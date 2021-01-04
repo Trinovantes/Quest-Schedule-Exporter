@@ -1,3 +1,5 @@
+/* eslint-disable quote-props */
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 
@@ -26,17 +28,17 @@ module.exports = {
         DEFINE: 'readonly',
     },
 
-    plugins: [
-        'import',
-        'node',
-        'promise',
-        'standard',
-        '@typescript-eslint',
-    ],
-
+    // Rules order is important, please avoid shuffling them
     extends: [
+        'standard',
+        'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    ],
+
+    plugins: [
+        'standard',
+        '@typescript-eslint',
     ],
 
     rules: {
@@ -59,7 +61,7 @@ module.exports = {
 
         'comma-dangle': ['error', 'always-multiline'],
         'space-before-function-paren': ['error', 'never'],
-        indent: ['error', 4, {
+        'indent': ['error', 4, {
             SwitchCase: 1,
         }],
 
@@ -82,7 +84,7 @@ module.exports = {
             default: 'generic',
         }],
 
-        semi: 'off',
+        'semi': 'off',
         '@typescript-eslint/semi': ['error', 'never'],
 
         // allow debugger during development only
