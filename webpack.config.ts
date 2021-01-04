@@ -9,7 +9,7 @@ module.exports = {
     target: 'web',
     mode: process.env.NODE_ENV,
     devtool: isDev
-        ? 'inline-source-map'
+        ? 'source-map'
         : false,
 
     entry: path.resolve(__dirname, './src/js/main.ts'),
