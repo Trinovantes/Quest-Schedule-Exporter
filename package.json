@@ -1,18 +1,20 @@
 {
     "private": true,
     "scripts": {
-        "build": "cross-env NODE_ENV=production  webpack            -r @babel/register",
-        "dev": "  cross-env NODE_ENV=development webpack-dev-server -r @babel/register --watch",
+        "build": "cross-env NODE_ENV=production  webpack",
+        "dev": "  cross-env NODE_ENV=development webpack-dev-server",
         "lint": "eslint --ext .ts,.js ."
     },
     "babel": {
         "presets": [
-            "@babel/preset-env"
+            "@babel/preset-env",
+            "@babel/preset-typescript"
         ]
     },
     "devDependencies": {
         "@babel/core": "^7.12.9",
         "@babel/preset-env": "^7.12.7",
+        "@babel/preset-typescript": "^7.12.7",
         "@babel/register": "^7.12.1",
         "@types/jquery": "^3.5.5",
         "@types/mini-css-extract-plugin": "^1.2.2",
@@ -24,7 +26,6 @@
         "eslint-plugin-import": "^2.22.0",
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-promise": "^4.2.1",
-        "eslint-plugin-standard": "^5.0.0",
         "file-loader": "^6.1.0",
         "handlebars": "^4.7.6",
         "handlebars-loader": "^1.7.1",

@@ -22,6 +22,5 @@
     "include": [
         "**/*",
         ".eslintrc.js",
-        "webpack.config.js",
     ],
 }

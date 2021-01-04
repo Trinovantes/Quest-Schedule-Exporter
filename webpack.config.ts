@@ -1,6 +1,7 @@
 import path from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import templateConfig from './src/js/config.json'
 
 const isDev = (process.env.NODE_ENV === 'development')
 
@@ -68,7 +69,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.hbs'),
-            templateParameters: require('./src/js/config.json'),
+            templateParameters: templateConfig,
             favicon: path.resolve(__dirname, './src/img/favicon.ico'),
         }),
     ],
