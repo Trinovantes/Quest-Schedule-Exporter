@@ -60,10 +60,6 @@ const commonConfig: Configuration = {
                 ],
             },
             {
-                test: /\.(jpe?g|png|gif|svg|webp)$/i,
-                use: 'asset',
-            },
-            {
                 test: /\.hbs$/i,
                 loader: 'html-loader',
                 options: {
