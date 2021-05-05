@@ -1,6 +1,6 @@
-import '../css/main.less'
+import './css/main.scss'
 
-import { CalendarExporter } from './CalendarExporter'
+import { CalendarExporter } from './js/CalendarExporter'
 import $ from 'jquery'
 
 void $.when($.ready).then(() => {

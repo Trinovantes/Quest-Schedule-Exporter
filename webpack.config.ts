@@ -1,31 +1,43 @@
 import path from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import { Configuration } from 'webpack'
+import Handlebars from 'handlebars'
 import templateConfig from './src/js/config.json'
 
+// ----------------------------------------------------------------------------
+// Constants
+// ----------------------------------------------------------------------------
+
+// Assume we are running webpack from the project root (../)
 const isDev = (process.env.NODE_ENV === 'development')
 
-module.exports = {
+const rootDir = path.resolve()
+const srcDir = path.resolve(rootDir, 'src')
+
+// ----------------------------------------------------------------------------
+// Base
+// ----------------------------------------------------------------------------
+
+const commonConfig: Configuration = {
     target: 'web',
-    mode: process.env.NODE_ENV,
+
+    mode: isDev
+        ? 'development'
+        : 'production',
     devtool: isDev
         ? 'source-map'
         : false,
 
-    entry: path.resolve(__dirname, './src/js/main.ts'),
+    entry: path.resolve(srcDir, 'main.ts'),
     output: {
-        publicPath: '/',
         filename: isDev
             ? '[name].js'
             : '[name].[contenthash].js',
     },
 
     resolve: {
-        extensions: ['.ts', '.js', '.json', '.css', '.less'],
-        modules: [
-            path.resolve(__dirname, './src'),
-            'node_modules',
-        ],
+        extensions: ['.ts', '.js', '.vue', '.json', 'scss', '.css'],
     },
 
     externals: {
@@ -40,20 +52,26 @@ module.exports = {
                 use: 'ts-loader',
             },
             {
-                test: /\.less$/,
+                test: /\.(sass|scss)$/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    'less-loader',
+                    'sass-loader',
                 ],
             },
             {
-                test: /\.(png|jpe?g|gif|ico)$/i,
-                use: 'file-loader',
+                test: /\.(jpe?g|png|gif|svg|webp)$/i,
+                use: 'asset',
             },
             {
-                test: /\.hbs$/,
-                use: 'handlebars-loader',
+                test: /\.hbs$/i,
+                loader: 'html-loader',
+                options: {
+                    preprocessor: (input: string): string => {
+                        const template = Handlebars.compile(input)
+                        return template(templateConfig)
+                    },
+                },
             },
         ],
     },
@@ -68,9 +86,10 @@ module.exports = {
                 : '[id].[contenthash].css',
         }),
         new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, './src/index.hbs'),
-            templateParameters: templateConfig,
-            favicon: path.resolve(__dirname, './src/img/favicon.ico'),
+            template: path.resolve(srcDir, 'index.hbs'),
+            favicon: path.resolve(srcDir, 'img/favicon.ico'),
         }),
     ],
 }
+
+export default commonConfig

@@ -4,12 +4,10 @@
 const path = require('path')
 
 module.exports = {
-    // https://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy
-    // This option interrupts the configuration hierarchy at this file
-    // Remove this if you have an higher level ESLint config file (it usually happens into a monorepos)
     root: true,
 
     parserOptions: {
+        extraFileExtensions: ['.vue'],
         parser: '@typescript-eslint/parser',
         project: path.resolve(__dirname, './tsconfig.json'),
         tsconfigRootDir: __dirname,
@@ -25,7 +23,7 @@ module.exports = {
 
     // Disable warnings for variables that are accessed but not defined in same file
     globals: {
-        DEFINE: 'readonly',
+        'DEFINE': 'readonly',
     },
 
     // Rules order is important, please avoid shuffling them
@@ -34,11 +32,12 @@ module.exports = {
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        'plugin:vue/vue3-recommended',
     ],
 
     plugins: [
-        'standard',
         '@typescript-eslint',
+        'vue',
     ],
 
     rules: {
@@ -59,10 +58,21 @@ module.exports = {
         'import/no-unresolved': 'off',
         'import/no-extraneous-dependencies': 'off',
 
-        'comma-dangle': ['error', 'always-multiline'],
+        'comma-dangle': 'off',
+        '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
+
         'space-before-function-paren': ['error', 'never'],
         'indent': ['error', 4, {
-            SwitchCase: 1,
+            'SwitchCase': 1,
+        }],
+
+        'vue/html-indent': ['error', 4],
+        'vue/max-attributes-per-line': ['error', {
+            singleline: 999,
+            multiline: {
+                max: 1,
+                allowFirstLine: false,
+            },
         }],
 
         '@typescript-eslint/type-annotation-spacing': 'error',
@@ -98,7 +108,42 @@ module.exports = {
         'semi': 'off',
         '@typescript-eslint/semi': ['error', 'never'],
 
-        // allow debugger during development only
-        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-debugger': 'error',
+
+        '@typescript-eslint/naming-convention': [
+            'error',
+            {
+                'selector': 'default',
+                'format': null,
+                'modifiers': ['requiresQuotes'],
+            },
+            {
+                'selector': 'typeLike',
+                'format': ['PascalCase'],
+            },
+            {
+                'selector': 'parameter',
+                'format': ['strictCamelCase'],
+                'leadingUnderscore': 'allow',
+            },
+            {
+                'selector': 'memberLike',
+                'modifiers': ['private'],
+                'format': ['strictCamelCase'],
+                'leadingUnderscore': 'require',
+            },
+            {
+                'selector': [
+                    'variableLike',
+                    'method',
+                ],
+                'format': ['strictCamelCase', 'UPPER_CASE'],
+            },
+        ],
+
+        '@typescript-eslint/strict-boolean-expressions': ['error', {
+            allowNullableBoolean: true,
+            allowNullableString: true,
+        }],
     },
 }

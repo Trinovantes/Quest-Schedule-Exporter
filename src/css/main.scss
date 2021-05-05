@@ -1,7 +1,8 @@
-@import url('normalize.less');
+@import './normalize.scss';
 
-@red: #A94442;
-@padding: 20px;
+$error: #A94442;
+$padding: 20px;
+$border: 1px solid #999;
 
 body{
     color: #333;
@@ -12,17 +13,8 @@ body{
 
 div.container{
     margin: 0 auto;
-    padding: (@padding * 2) @padding;
+    padding: ($padding * 2) $padding;
     width: 800px;
-}
-
-noscript{
-    aside{
-        color: @red;
-        background: #F2DEDE;
-        font-weight: bold;
-        padding: 0 @padding;
-    }
 }
 
 header{
@@ -33,19 +25,19 @@ header{
     }
 
     h1, h2, p, ol{
-        margin: @padding 0;
+        margin: $padding 0;
     }
 }
 
 form#mainForm{
     background: #eee;
-    border: 1px solid #999;
+    border: $border;
     border-radius: 3px;
-    margin: @padding 0;
-    padding: @padding;
+    margin: $padding 0;
+    padding: $padding;
 
     div.formGroup{
-        margin-bottom: @padding;
+        margin-bottom: $padding;
 
         label{
             font-weight: bold;
@@ -63,7 +55,7 @@ form#mainForm{
         select{
             box-sizing: border-box;
             background: #fff;
-            border: 1px solid #999;
+            border: $border;
             display: block;
             margin: 0;
             padding: 10px;
@@ -76,12 +68,10 @@ form#mainForm{
     }
 
     table#placeholders{
-        @border-color: #999;
-
         background: #efefef;
-        border-left: 1px solid @border-color;
-        border-right: 1px solid @border-color;
-        margin-bottom: @padding;
+        border-left: $border;
+        border-right: $border;
+        margin-bottom: $padding;
         width: 100%;
 
         tr{
@@ -93,8 +83,8 @@ form#mainForm{
 
         thead{
             tr{
-                border-top: 1px solid @border-color;
-                border-bottom: 1px solid @border-color;
+                border-top: $border;
+                border-bottom: $border;
 
                 th{
                     text-align: left;
@@ -104,7 +94,7 @@ form#mainForm{
 
         tbody{
             tr{
-                border-bottom: 1px solid @border-color;
+                border-bottom: $border;
             }
         }
     }

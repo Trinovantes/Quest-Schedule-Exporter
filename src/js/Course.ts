@@ -8,7 +8,7 @@ type NullableDate = Date | null
 
 type Weekday = 'm' | 't' | 'w' | 'h' | 'f'
 
-const WeekdayIndex: {[key in Weekday]: number} = {
+const weekdayIndex: {[key in Weekday]: number} = {
     m: 1,
     t: 2,
     w: 3,
@@ -16,7 +16,7 @@ const WeekdayIndex: {[key in Weekday]: number} = {
     f: 5,
 }
 
-const WeekdayName: {[key in Weekday]: string} = {
+const weekdayName: {[key in Weekday]: string} = {
     m: 'MO',
     t: 'TU',
     w: 'WE',
@@ -25,14 +25,14 @@ const WeekdayName: {[key in Weekday]: string} = {
 }
 
 export class Course {
-    private meta: {[key: string]: string}
-    private classDaysICal: string
-    private untilDateICal: string
-    private startTimeOnFirstDate: string
-    private endTimeOnFirstDate: string
+    private _meta: {[key: string]: string}
+    private _classDaysCal: string
+    private _untilDateCal: string
+    private _startTimeOnFirstDate: string
+    private _endTimeOnFirstDate: string
 
     constructor(code: string, name: string, section: string, type: string, location: string, prof: string, dateFormat: string, classDays: string, startTime: string, endTime: string, startDate: string, endDate: string) {
-        this.meta = {
+        this._meta = {
             code: code,
             name: name,
             section: flatten(section),
@@ -48,7 +48,7 @@ export class Course {
         const daysWithClasses = classDays
             .replace(/Th/g, 'H') // Replace 'Th' with H key
             .toLowerCase() // Set to lowercase to match keys in the above mappings
-        this.classDaysICal = convertDaysToICal(Array.from(daysWithClasses))
+        this._classDaysCal = convertDaysToCal(Array.from(daysWithClasses))
 
         // If it's a repeating event (e.g. lecture), then return a DateTime object
         // otherwise (e.g. midterm), then return undefined
@@ -62,13 +62,13 @@ export class Course {
             lastDateOfClass.setMinutes(59)
             return lastDateOfClass
         })()
-        this.untilDateICal = convertToICalTimeString(untilDate)
+        this._untilDateCal = convertToCalTimeString(untilDate)
 
         // Advance start date of term to first day of class
         // e.g. term start on Jan 4 (Mon) but first day of a class is on Jan 5 (Tues)
         const firstDateOfClass: Date = (function() {
             const firstDate = parseDate(dateFormat, startDate)
-            const daysWithClassesNumbers = daysWithClasses.split('').map((d) => WeekdayIndex[d as Weekday])
+            const daysWithClassesNumbers = daysWithClasses.split('').map((d) => weekdayIndex[d as Weekday])
 
             let dayCounter = 0
             const MAX_DAY_ADVANCEMENT = 365
@@ -105,25 +105,25 @@ export class Course {
             return dateTime
         }
 
-        this.startTimeOnFirstDate = convertToICalTimeString(parseTime(startTime))
-        this.endTimeOnFirstDate = convertToICalTimeString(parseTime(endTime))
+        this._startTimeOnFirstDate = convertToCalTimeString(parseTime(startTime))
+        this._endTimeOnFirstDate = convertToCalTimeString(parseTime(endTime))
     }
 
     *printer(summary: string, description: string): Generator<string> {
         yield 'BEGIN:VEVENT'
-        yield 'DTSTART;TZID=America/Toronto:' + this.startTimeOnFirstDate
-        yield 'DTEND;TZID=America/Toronto:' + this.endTimeOnFirstDate
+        yield 'DTSTART;TZID=America/Toronto:' + this._startTimeOnFirstDate
+        yield 'DTEND;TZID=America/Toronto:' + this._endTimeOnFirstDate
 
-        if (this.untilDateICal) {
+        if (this._untilDateCal) {
             yield '' +
                 'RRULE:FREQ=WEEKLY' + ';' +
-                'UNTIL=' + this.untilDateICal + ';' +
+                'UNTIL=' + this._untilDateCal + ';' +
                 'WKST=SU' + ';' +
-                'BYDAY=' + this.classDaysICal
+                'BYDAY=' + this._classDaysCal
         }
 
         yield 'SUMMARY:' + sanitizeOutput(this.fillPlaceholders(summary))
-        yield 'LOCATION:' + this.meta.location
+        yield 'LOCATION:' + this._meta.location
         yield 'DESCRIPTION:' + sanitizeOutput(this.fillPlaceholders(description))
         yield 'END:VEVENT'
     }
@@ -134,7 +134,7 @@ export class Course {
         for (const placeholder of Config.placeholders) {
             const key = placeholder.placeholder.substring(1)
             const regex = new RegExp('(' + placeholder.placeholder + ')', 'g')
-            ret = ret.replace(regex, this.meta[key])
+            ret = ret.replace(regex, this._meta[key])
         }
 
         return ret
@@ -147,11 +147,11 @@ export class Course {
 
 // Parse the days with classes string from quest and return a comma delimited list
 // of weekdays in iCalendar format
-function convertDaysToICal(days: Array<string>) {
-    return days.map((day) => WeekdayName[day as Weekday]).join(',')
+function convertDaysToCal(days: Array<string>) {
+    return days.map((day) => weekdayName[day as Weekday]).join(',')
 }
 
-function convertToICalTimeString(dateTime: NullableDate): string {
+function convertToCalTimeString(dateTime: NullableDate): string {
     if (!dateTime) {
         return ''
     }

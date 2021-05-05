@@ -25,7 +25,7 @@ export class CalendarExporter {
         this.parseData()
 
         // Returns a string of the calendar file
-        const ical = this.generateICal()
+        const ical = this.generateCal()
 
         // Downloads file to user's computer
         this.downloadFile(ical)
@@ -96,7 +96,7 @@ export class CalendarExporter {
 
     // See RFC2445 for more details
     // https://www.ietf.org/rfc/rfc2445.txt
-    private generateICal(): string {
+    private generateCal(): string {
         let calendarContent = ''
 
         const addLine = function(line: string) {
@@ -108,9 +108,8 @@ export class CalendarExporter {
         addLine('PRODID:-//www.QuestScheduleExporter.xyz//EN')
 
         for (const course of this._courses) {
-            // I hate JavaScript
-            // https://stackoverflow.com/a/47190038
             const printer = course.printer(this._summary, this._description)
+
             let next: IteratorResult<string>
             while (!(next = printer.next()).done) {
                 addLine(next.value)
@@ -163,32 +162,33 @@ function createSectionRegex(questData: string): RegExp {
         return is24h ? timePattern24h : timePattern12h
     })()
 
-    const patternOrTBA = function(pattern: string) {
+    const patternOrTba = function(pattern: string) {
         return '(' + pattern + '|TBA)\\s*'
     }
 
-    /* jshint multistr: true */
     const regex =
         '(' + classNumberPattern + ')\\s*' + // Class number
         '(\\d{3}\\s*)' + // Section
         '(\\w{3}\\s*)' + // Type (LEC, SEM, STU, LAB)
-        patternOrTBA(
+        patternOrTba(
             '([MThWF]{0,6})\\s*' + // Days
             '(' + timePattern + ')\\ -\\ ' + // Start time
             '(' + timePattern + ')\\s*' + // End time
             '',
         ) +
-        patternOrTBA(
+        patternOrTba(
             '[\\w\\ ]+\\s*[0-9]{1,5}[A-Z]?' + // Location
             '',
         ) +
-        patternOrTBA(
+        patternOrTba(
             '[A-Za-z_\\ \\-\\,\\s]+' + // Professor
             '',
         ) +
         '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})\\ -\\ ' + // Start date
         '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})' + // End date
     ''
+
+    console.log(regex)
 
     return new RegExp(regex, 'g')
 }
