@@ -3,7 +3,7 @@
         "strict": true,
         "sourceMap": true,
 
-        "target": "esnext",
+        "target": "es2020",
         "module": "esnext",
         "moduleResolution": "node",
 
@@ -15,6 +15,7 @@
         "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
 
         "outDir": "dist",
         "baseUrl": ".",
@@ -24,7 +25,7 @@
     },
     "exclude": [
         "node_modules",
-        "dist*",
+        "dist",
     ],
     "include": [
         "**/*",

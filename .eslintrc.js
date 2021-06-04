@@ -3,6 +3,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const INLINE_ELEMENTS = require('eslint-plugin-vue/lib/utils/inline-non-void-elements.json')
+
 module.exports = {
     root: true,
 
@@ -11,7 +14,7 @@ module.exports = {
         parser: '@typescript-eslint/parser',
         project: path.resolve(__dirname, './tsconfig.json'),
         tsconfigRootDir: __dirname,
-        ecmaVersion: 2017, // Allows for the parsing of modern ECMAScript features
+        ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
         sourceType: 'module', // Allows for the use of imports
     },
 
@@ -73,6 +76,10 @@ module.exports = {
                 max: 1,
                 allowFirstLine: false,
             },
+        }],
+
+        'vue/singleline-html-element-content-newline': ['error', {
+            'ignores': ['ExternalLink', ...INLINE_ELEMENTS],
         }],
 
         '@typescript-eslint/type-annotation-spacing': 'error',
