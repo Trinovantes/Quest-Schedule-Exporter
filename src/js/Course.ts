@@ -33,8 +33,8 @@ export class Course {
 
     constructor(code: string, name: string, section: string, type: string, location: string, prof: string, dateFormat: string, classDays: string, startTime: string, endTime: string, startDate: string, endDate: string) {
         this._meta = {
-            code: code,
-            name: name,
+            code,
+            name,
             section: flatten(section),
             type: flatten(type),
             location: flatten(location),
