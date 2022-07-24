@@ -40,10 +40,6 @@ const commonConfig: Configuration = {
         extensions: ['.ts', '.js', '.vue', '.json', 'scss', '.css'],
     },
 
-    externals: {
-        jquery: 'jQuery',
-    },
-
     module: {
         rules: [
             {
