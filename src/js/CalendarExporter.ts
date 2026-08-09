@@ -1,5 +1,5 @@
-import Config from './config.json'
-import { Course } from './Course'
+import Config from '../Config.json' with { type: 'json' }
+import { Course } from './Course.ts'
 
 // -----------------------------------------------------------------------------
 // CalendarExporter
@@ -187,8 +187,6 @@ function createSectionRegex(questData: string): RegExp {
         '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})\\ -\\ ' + // Start date
         '(\\d{2,4}\\/\\d{2,4}\\/\\d{2,4})' + // End date
     ''
-
-    console.log(regex)
 
     return new RegExp(regex, 'g')
 }

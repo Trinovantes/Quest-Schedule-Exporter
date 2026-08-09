@@ -1,45 +1,28 @@
 {
+    "type": "module",
     "private": true,
     "scripts": {
-        "dev": "  cross-env NODE_ENV=development webpack serve",
-        "build": "cross-env NODE_ENV=production  webpack",
-        "lint": "eslint --ext .ts,.js,.vue --ignore-path .gitignore ."
-    },
-    "babel": {
-        "presets": [
-            "@babel/preset-env",
-            "@babel/preset-typescript"
-        ]
+        "dev": "  vite --config ./build/vite.config.ts",
+        "build": "vite --config ./build/vite.config.ts build",
+        "lint": "eslint"
     },
     "devDependencies": {
-        "@babel/core": "^7.12.10",
-        "@babel/preset-env": "^7.12.11",
-        "@babel/preset-typescript": "^7.12.7",
-        "@babel/register": "^7.13.14",
-        "@types/jquery": "^3.5.14",
-        "@types/loader-utils": "^2.0.2",
-        "@typescript-eslint/eslint-plugin": "^5.20.0",
-        "@typescript-eslint/parser": "^5.20.0",
-        "cross-env": "^7.0.3",
-        "css-loader": "^6.2.0",
-        "eslint": "^8.13.0",
-        "eslint-config-standard": "^17.0.0",
-        "eslint-plugin-import": "^2.22.0",
-        "eslint-plugin-n": "^15.2.4",
-        "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-promise": "^6.0.0",
-        "eslint-plugin-vue": "^9.2.0",
-        "handlebars": "^4.7.6",
-        "html-loader": "^4.1.0",
-        "html-webpack-plugin": "^5",
-        "jquery": "^3.6.0",
-        "mini-css-extract-plugin": "^2.0.0",
-        "sass": "^1.32.12",
-        "sass-loader": "^13.0.2",
-        "ts-loader": "^9",
-        "typescript": "^4",
-        "webpack": "^5.28.0",
-        "webpack-cli": "^4.10.0",
-        "webpack-dev-server": "^4.0.0"
+        "@eslint/compat": "^2.1.0",
+        "@eslint/js": "^10.0.1",
+        "@stylistic/eslint-plugin": "^5.10.0",
+        "@types/jquery": "^4.0.1",
+        "@types/node": "^26.2.0",
+        "@vitejs/plugin-vue": "^6.0.8",
+        "eslint": "^10.8.1",
+        "eslint-plugin-n": "^18.2.2",
+        "eslint-plugin-vue": "^10.10.0",
+        "globals": "^17.9.0",
+        "handlebars": "^4.7.9",
+        "jquery": "^4.0.0",
+        "typescript": "^6",
+        "typescript-eslint": "^8.66.0",
+        "vite": "^8.2.1",
+        "vite-plugin-handlebars": "^2.0.3",
+        "vue-eslint-parser": "^10.4.1"
     }
 }

@@ -1,4 +1,4 @@
-import Config from './config.json'
+import Config from '../Config.json' with { type: 'json' }
 
 // -----------------------------------------------------------------------------
 // Course
@@ -8,7 +8,7 @@ type NullableDate = Date | null
 
 type Weekday = 'm' | 't' | 'w' | 'h' | 'f'
 
-const weekdayIndex: {[key in Weekday]: number} = {
+const weekdayIndex: { [key in Weekday]: number } = {
     m: 1,
     t: 2,
     w: 3,
@@ -16,7 +16,7 @@ const weekdayIndex: {[key in Weekday]: number} = {
     f: 5,
 }
 
-const weekdayName: {[key in Weekday]: string} = {
+const weekdayName: { [key in Weekday]: string } = {
     m: 'MO',
     t: 'TU',
     w: 'WE',
@@ -25,7 +25,7 @@ const weekdayName: {[key in Weekday]: string} = {
 }
 
 export class Course {
-    private _meta: {[key: string]: string}
+    private _meta: { [key: string]: string }
     private _classDaysCal: string
     private _untilDateCal: string
     private _startTimeOnFirstDate: string
@@ -185,7 +185,9 @@ function flatten(s: string): string {
 // Assume dateString is 8 digits with 2 slashes in between (10 characters total)
 function parseDate(dateFormatType: string, dateString: string): Date {
     const args = dateString.split('/').map((i) => parseInt(i))
-    let year; let month; let day
+    let year: number
+    let month: number
+    let day: number
 
     switch (dateFormatType) {
         case 'DD/MM/YYYY': {

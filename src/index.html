@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; object-src 'none'; base-uri 'self';">
     <meta charset="UTF-8">
     <title>{{ pageTitle }}</title>
     <meta name="viewport" content="width=device-width">
@@ -12,7 +11,9 @@
 <div class="container">
     <noscript>This website requires JavaScript</noscript>
     <header>
-        <h1>{{ pageTitle }}</h1>
+        <h1>
+            {{ pageTitle }}
+        </h1>
         <p>
             {{ pageDesc }}
         </p>
@@ -75,6 +76,8 @@
             <button id="generateBtn">Generate</button>
         </form>
     </article>
+
+    <script type="module" src="./main.ts"></script>
 </div>
 
 </body>

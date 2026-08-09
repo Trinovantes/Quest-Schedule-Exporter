@@ -1,4 +1,51 @@
-@import './normalize.scss';
+@use 'sass:color';
+
+// ----------------------------------------------------------------------------
+// Reset
+// ----------------------------------------------------------------------------
+
+*,
+*::before,
+*::after{
+    box-sizing: border-box;
+}
+
+*:not(dialog){
+    margin: 0;
+    padding: 0;
+}
+
+img,
+picture,
+video,
+canvas,
+svg{
+    display: block;
+    max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+}
+
+// ----------------------------------------------------------------------------
+// Main
+// ----------------------------------------------------------------------------
 
 $error: #A94442;
 $padding: 20px;
@@ -14,7 +61,7 @@ body{
 div.container{
     margin: 0 auto;
     padding: ($padding * 2) $padding;
-    width: 800px;
+    width: 80ch;
 }
 
 header{
@@ -26,6 +73,10 @@ header{
 
     h1, h2, p, ol{
         margin: $padding 0;
+    }
+
+    ol{
+        padding-left: $padding * 2;
     }
 }
 
@@ -62,7 +113,7 @@ form#mainForm{
             width: 100%;
 
             &:focus{
-                background: lighten(yellow, 40%);
+                background: color.adjust(yellow, $lightness: 40%);
             }
         }
     }
@@ -71,6 +122,7 @@ form#mainForm{
         background: #efefef;
         border-left: $border;
         border-right: $border;
+        border-collapse: collapse;
         margin-bottom: $padding;
         width: 100%;
 

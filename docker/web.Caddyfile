@@ -1,0 +1,6 @@
+:80 {
+	encode gzip
+
+	root * /app/dist/
+	file_server
+}

@@ -1,34 +1,57 @@
 {
+    "ts-node": {
+        "transpileOnly": true,
+        "compilerOptions": {
+            "module": "commonjs",
+            "moduleResolution": "node10",
+        },
+    },
     "compilerOptions": {
         "strict": true,
         "sourceMap": true,
+        "declaration": false,
+        "declarationMap": false,
 
-        "target": "es2020",
-        "module": "esnext",
-        "moduleResolution": "node",
+        "target": "esnext",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
 
-        "esModuleInterop": true,
+        "allowImportingTsExtensions": true,
         "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
+        "erasableSyntaxOnly": true,
+        "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-
-        "noUnusedLocals": true,
-        "noImplicitReturns": true,
+        "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "useUnknownInCatchVariables": true,
+        "verbatimModuleSyntax": true,
 
         "outDir": "dist",
-        "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"],
+            "tests/*": ["./tests/*"],
         },
+        "types": [
+            "node",
+        ],
     },
     "exclude": [
+        "**/dist*",
+        "**/raw",
+        "**/*.html",
         "node_modules",
-        "dist",
+        "libs",
     ],
     "include": [
         "**/*",
-        ".eslintrc.js",
+        ".vitepress/**/*",
+        "eslint.config.*js",
     ],
 }
